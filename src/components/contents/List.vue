@@ -4,7 +4,7 @@
  * @Author: wcd
  * @Date: 2020-12-09 11:47:40
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-10 16:55:08
+ * @LastEditTime: 2020-12-10 17:28:46
 -->
 <template>
   <div class="fly-panel" style="margin-bottom: 0;">
@@ -41,18 +41,25 @@ export default {
       page: 0,
       limit: 20,
       catalog: '',
-      lists: []
+      lists: [],
+      current: ''
     }
   },
   components: {
     ListItem
+  },
+  watch: {
+    current (newValue, oldValue) {
+      console.log('🚀 ~ file: List.vue ~ line 53 ~ current ~ oldValue', oldValue)
+      console.log('🚀 ~ file: List.vue ~ line 53 ~ current ~ newValue', newValue)
+    }
   },
   mounted () {
     this._getList()
   },
   methods: {
     _getList () {
-      if (this.isRepeat) return
+      // if (this.isRepeat) return
       this.isRepeat = true
       if (this.isEnd) return
       let options = {
@@ -85,7 +92,7 @@ export default {
       }).catch((err) => {
         this.isRepeat = false
         if (err) {
-          this.$alert(err.msg)
+          this.$alert(err.message)
         }
       })
     },
@@ -94,6 +101,9 @@ export default {
       this._getList()
     },
     search (val) {
+      if (typeof val === 'undefined' && this.current === '') { return }
+      console.log('🚀 ~ file: List.vue ~ line 97 ~ search ~ val', val)
+      this.current = val
       switch (val) {
         case 0:
           this.status = '0'
@@ -116,6 +126,7 @@ export default {
         default:
           this.status = ''
           this.tag = ''
+          this.current = ''
           break
       }
     }

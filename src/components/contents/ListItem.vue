@@ -4,7 +4,7 @@
  * @Author: wcd
  * @Date: 2020-12-10 09:47:26
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-10 16:50:42
+ * @LastEditTime: 2020-12-10 17:23:58
 -->
 <template>
   <div>
@@ -43,7 +43,8 @@
     </ul>
     <div style="text-align: center" v-show="isShow">
       <div class="laypage-main" v-if="!isEnd">
-        <a @click.prevent="more()" class="laypage-next">更多求解</a>
+        <a @click.prevent="more()" class="laypage-next" style="cursor: pointer;
+  display: inline-block;">更多求解</a>
       </div>
       <div class="nomore gray" v-else>没有更多了</div>
     </div>
