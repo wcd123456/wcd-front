@@ -4,7 +4,7 @@
  * @Author: wcd
  * @Date: 2020-12-09 11:47:40
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-10 14:19:07
+ * @LastEditTime: 2020-12-10 16:55:08
 -->
 <template>
   <div class="fly-panel" style="margin-bottom: 0;">
@@ -22,7 +22,7 @@
         <a href :class="{'layui-this':sort ==='answer'}" @click.prevent="search(4)">按热议</a>
       </span>
     </div>
-    <list-item :lists="lists" @nextpage="nextPage"></list-item>
+    <list-item :lists="lists" @nextpage="nextPage" :isEnd="isEnd"></list-item>
   </div>
 </template>
 
@@ -33,62 +33,15 @@ export default {
   name: 'list',
   data () {
     return {
+      isEnd: false,
+      isRepeat: false,
       status: '',
       tag: '',
       sort: 'created',
       page: 0,
       limit: 20,
       catalog: '',
-      lists: [
-        {
-          uid: {
-            name: '姓名',
-            isVip: '1'
-          },
-          title: '标题',
-          content: '',
-          created: '2020-11-10 01:00:00',
-          catalog: 'ask',
-          fav: 40,
-          isEnd: 0,
-          answer: 0,
-          status: 1,
-          isTop: 0,
-          tags: [
-            {
-              name: '精华',
-              class: 'layui-bg-red'
-            }, {
-              name: '热门',
-              class: 'layui-bg-blue'
-            }
-          ]
-        },
-        {
-          uid: {
-            name: '姓名',
-            isVip: '1'
-          },
-          title: '标题',
-          content: '',
-          created: '2020-11-10 01:00:00',
-          catalog: 'ask',
-          fav: 40,
-          isEnd: 0,
-          answer: 0,
-          status: 1,
-          isTop: 0,
-          tags: [
-            {
-              name: '精华',
-              class: 'layui-bg-red'
-            }, {
-              name: '热门',
-              class: 'layui-bg-blue'
-            }
-          ]
-        }
-      ]
+      lists: []
     }
   },
   components: {
@@ -99,6 +52,9 @@ export default {
   },
   methods: {
     _getList () {
+      if (this.isRepeat) return
+      this.isRepeat = true
+      if (this.isEnd) return
       let options = {
         catalog: this.catalog,
         isTop: 0,
@@ -109,8 +65,28 @@ export default {
         status: this.status
       }
       getList(options).then((res) => {
-        console.log('🚀 ~ file: List.vue ~ line 63 ~ getList ~ res', res)
+        // 加入一个请求所，防止用户多次点击，等待数据返回再点击
+        this.isRepeat = false
+        // console.log('🚀 ~ file: List.vue ~ line 63 ~ getList ~ res', res)
         // this.lists = res.data
+        // 对异常的判断，res.code非200.给一个提示
+        // 判断是否lists长度为0，如果为0即可以直接赋值
+        // 当长度不为0，后面请求的数据加入到lists里面来
+        if (res.code === 200) {
+          if (res.data.length < this.limit) {
+            this.isEnd = true
+          }
+          if (this.lists.length === 0) {
+            this.lists = res.data
+          } else {
+            this.lists = this.lists.concat(res.data)
+          }
+        }
+      }).catch((err) => {
+        this.isRepeat = false
+        if (err) {
+          this.$alert(err.msg)
+        }
       })
     },
     nextPage () {

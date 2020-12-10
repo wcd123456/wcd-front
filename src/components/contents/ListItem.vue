@@ -4,7 +4,7 @@
  * @Author: wcd
  * @Date: 2020-12-10 09:47:26
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-10 16:27:41
+ * @LastEditTime: 2020-12-10 16:50:42
 -->
 <template>
   <div>
@@ -42,9 +42,10 @@
       </li>
     </ul>
     <div style="text-align: center" v-show="isShow">
-      <div class="laypage-main">
+      <div class="laypage-main" v-if="!isEnd">
         <a @click.prevent="more()" class="laypage-next">更多求解</a>
       </div>
+      <div class="nomore gray" v-else>没有更多了</div>
     </div>
   </div>
 </template>
@@ -63,6 +64,10 @@ export default {
     isShow: {
       type: Boolean,
       default: true
+    },
+    isEnd: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -114,5 +119,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.nomore {
+  font-size: 16px;
+  padding: 30px 0;
+}
+.gray{
+  color: #ccc;
+}
 </style>
