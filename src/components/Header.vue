@@ -1,8 +1,16 @@
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: wcd
+ * @Date: 2020-12-09 10:03:41
+ * @LastEditors: wcd
+ * @LastEditTime: 2020-12-10 09:45:17
+-->
 <template>
   <div class="fly-header layui-bg-black">
     <div class="layui-container">
       <a class="fly-logo" href="/">
-        <img src="../assets/logo-2.png" alt="layui" />
+        <!-- <img src="../assets/logo-2.png" alt="layui" /> -->
       </a>
       <ul class="layui-nav fly-nav layui-hide-xs">
         <li class="layui-nav-item layui-this">
