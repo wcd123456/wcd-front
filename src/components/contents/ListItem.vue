@@ -4,7 +4,7 @@
  * @Author: wcd
  * @Date: 2020-12-10 09:47:26
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-10 17:23:58
+ * @LastEditTime: 2020-12-14 14:20:20
 -->
 <template>
   <div>
@@ -12,8 +12,8 @@
       <li v-for="(item,index) in items" :key="'item'+index">
         <a href="user/home.html" class="fly-avatar">
           <img
-            src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
-            alt="贤心"
+            :src="item.uid.pic"
+            :alt="item.uid.name"
           />
         </a>
         <h2>
@@ -104,7 +104,7 @@ export default {
       // moment().subtract(7, 'days')当前时间往后退7天
       // 超过七天显示年月日
       if (moment(data).isBefore(moment().subtract(7, 'days'))) {
-        return moment(data).format('YYY-MM-DD')
+        return moment(data).format('YYYY-MM-DD')
       } else {
         // 七天之内显示几天前
         return moment(data).from(moment())

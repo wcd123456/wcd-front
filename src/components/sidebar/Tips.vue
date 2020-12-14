@@ -4,24 +4,15 @@
  * @Author: wcd
  * @Date: 2020-12-09 11:31:20
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-09 11:46:13
+ * @LastEditTime: 2020-12-11 15:59:21
 -->
 <template>
   <div class="fly-panel">
     <h3 class="fly-panel-title">温馨通道</h3>
     <div class="fly-panel-main layui-row">
       <ul class="layui-clear imooc-quick">
-        <li class="layui-col-xs6">
-          <a href target="_blank">imooc</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href target="_blank">imooc</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href target="_blank">imooc</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href target="_blank">imooc</a>
+        <li class="layui-col-xs6" v-for="(item,index) in lists" :key="'tips'+index">
+          <a :href="item.link" target="_blank">{{item.title}}</a>
         </li>
       </ul>
     </div>
@@ -29,8 +20,21 @@
 </template>
 
 <script>
+import { getTips } from '@/api/content'
 export default {
-  name: 'tips'
+  name: 'tips',
+  data () {
+    return {
+      lists: []
+    }
+  },
+  mounted () {
+    getTips().then((res) => {
+      if (res.code === 200) {
+        this.lists = res.data
+      }
+    })
+  }
 }
 </script>
 

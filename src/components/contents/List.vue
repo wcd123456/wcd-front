@@ -4,7 +4,7 @@
  * @Author: wcd
  * @Date: 2020-12-09 11:47:40
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-10 17:28:46
+ * @LastEditTime: 2020-12-14 15:16:12
 -->
 <template>
   <div class="fly-panel" style="margin-bottom: 0;">
@@ -27,10 +27,11 @@
 </template>
 
 <script>
-import { getList } from '@/api/content'
+import listMix from '@/mixin/list'
 import ListItem from './ListItem'
 export default {
   name: 'list',
+  mixins: [listMix],
   data () {
     return {
       isEnd: false,
@@ -50,56 +51,19 @@ export default {
   },
   watch: {
     current (newValue, oldValue) {
-      console.log('🚀 ~ file: List.vue ~ line 53 ~ current ~ oldValue', oldValue)
-      console.log('🚀 ~ file: List.vue ~ line 53 ~ current ~ newValue', newValue)
+      this.init()
+    },
+    '$route' (newValue, oldValue) {
+      // let catalog = this.$route.params['catalog']
+      let catalog = newValue.params['catalog']
+      if (catalog !== '' && typeof catalog !== 'undefined') {
+        this.catalog = catalog
+      }
+      this.init()
     }
   },
-  mounted () {
-    this._getList()
-  },
+
   methods: {
-    _getList () {
-      // if (this.isRepeat) return
-      this.isRepeat = true
-      if (this.isEnd) return
-      let options = {
-        catalog: this.catalog,
-        isTop: 0,
-        page: this.page,
-        limit: this.limit,
-        sort: this.sort,
-        tag: this.tag,
-        status: this.status
-      }
-      getList(options).then((res) => {
-        // 加入一个请求所，防止用户多次点击，等待数据返回再点击
-        this.isRepeat = false
-        // console.log('🚀 ~ file: List.vue ~ line 63 ~ getList ~ res', res)
-        // this.lists = res.data
-        // 对异常的判断，res.code非200.给一个提示
-        // 判断是否lists长度为0，如果为0即可以直接赋值
-        // 当长度不为0，后面请求的数据加入到lists里面来
-        if (res.code === 200) {
-          if (res.data.length < this.limit) {
-            this.isEnd = true
-          }
-          if (this.lists.length === 0) {
-            this.lists = res.data
-          } else {
-            this.lists = this.lists.concat(res.data)
-          }
-        }
-      }).catch((err) => {
-        this.isRepeat = false
-        if (err) {
-          this.$alert(err.message)
-        }
-      })
-    },
-    nextPage () {
-      this.page++
-      this._getList()
-    },
     search (val) {
       if (typeof val === 'undefined' && this.current === '') { return }
       console.log('🚀 ~ file: List.vue ~ line 97 ~ search ~ val', val)

@@ -4,7 +4,7 @@
  * @Author: wcd
  * @Date: 2020-12-09 11:49:16
  * @LastEditors: wcd
- * @LastEditTime: 2020-12-10 16:27:09
+ * @LastEditTime: 2020-12-14 15:12:45
 -->
 <template>
   <div class="fly-panel" v-show="lists.length > 0">
@@ -22,64 +22,17 @@
 </template>
 
 <script>
+import listMix from '@/mixin/list'
 import ListItem from './ListItem'
 export default {
   name: 'top',
+  mixins: [listMix],
   components: {
     ListItem
   },
   data () {
     return {
-      lists: [
-        {
-          uid: {
-            name: '姓名',
-            isVip: '1'
-          },
-          title: '标题',
-          content: '',
-          created: '2020-11-10 01:00:00',
-          catalog: 'ask',
-          fav: 40,
-          isEnd: 0,
-          answer: 0,
-          status: 1,
-          isTop: 0,
-          tags: [
-            {
-              name: '精华',
-              class: 'layui-bg-red'
-            }, {
-              name: '热门',
-              class: 'layui-bg-blue'
-            }
-          ]
-        },
-        {
-          uid: {
-            name: '姓名',
-            isVip: '1'
-          },
-          title: '标题',
-          content: '',
-          created: '2020-11-10 01:00:00',
-          catalog: 'ask',
-          fav: 40,
-          isEnd: 0,
-          answer: 0,
-          status: 1,
-          isTop: 0,
-          tags: [
-            {
-              name: '精华',
-              class: 'layui-bg-red'
-            }, {
-              name: '热门',
-              class: 'layui-bg-blue'
-            }
-          ]
-        }
-      ]
+      isTop: 1
     }
   }
 }
