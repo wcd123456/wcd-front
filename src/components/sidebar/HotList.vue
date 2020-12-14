@@ -1,22 +1,14 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-09 11:31:50
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-14 14:59:25
--->
 <template>
   <div>
     <dl class="fly-panel fly-list-one">
       <dt class="fly-panel-title">本周热议</dt>
-      <dd v-for="(item,index) in lists" :key="'hotlist'+index">
+      <dd v-for="(item, index) in lists" :key="'hotlist' + index">
         <a href="jie/detail.html">{{item.title}}</a>
         <span>
-          <i class="iconfont icon-pinglun1"></i> {{item.answer}}
+          <i class="iconfont icon-pinglun1"></i>
+          {{item.answer}}
         </span>
       </dd>
-
       <!-- 无数据时 -->
       <!--
         <div class="fly-none">没有相关数据</div>
@@ -35,7 +27,7 @@ export default {
     }
   },
   mounted () {
-    getTop().then(res => {
+    getTop().then((res) => {
       if (res.code === 200) {
         this.lists = res.data
       }

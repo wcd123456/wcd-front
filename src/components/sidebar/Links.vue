@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-09 11:32:01
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-14 15:03:42
--->
 <template>
   <div class="fly-panel fly-link">
     <h3 class="fly-panel-title">友情链接</h3>

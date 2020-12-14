@@ -22,7 +22,7 @@ class HttpRequest {
   }
   removePending (key, isRequest = false) {
     if (this.pending[key] && isRequest) {
-      this.pending[key]('取消重复的请求')
+      this.pending[key]('取消重复请求')
     }
     delete this.pending[key]
   }

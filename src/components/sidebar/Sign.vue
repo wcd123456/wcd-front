@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-09 11:31:32
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-09 11:46:24
--->
 <template>
   <div class="fly-panel fly-signin">
     <div class="fly-panel-title">

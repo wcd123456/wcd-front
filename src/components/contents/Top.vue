@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-09 11:49:16
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-14 15:12:45
--->
 <template>
   <div class="fly-panel" v-show="lists.length > 0">
     <div class="fly-panel-title fly-filter">
@@ -17,7 +9,7 @@
         style="color: #FF5722;"
       >去签到</a>
     </div>
-    <list-item :lists="lists" :isShow='false'></list-item>
+    <list-item :lists="lists" :isShow="false"></list-item>
   </div>
 </template>
 
@@ -27,13 +19,13 @@ import ListItem from './ListItem'
 export default {
   name: 'top',
   mixins: [listMix],
-  components: {
-    ListItem
-  },
   data () {
     return {
       isTop: 1
     }
+  },
+  components: {
+    ListItem
   }
 }
 </script>

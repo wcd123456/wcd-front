@@ -1,97 +1,97 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-09 11:47:40
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-14 15:16:12
--->
 <template>
   <div class="fly-panel" style="margin-bottom: 0;">
     <div class="fly-panel-title fly-filter">
-      <a href :class="{'layui-this':status ==='' && tag === ''}" @click.prevent="search()">综合</a>
+      <a :class="{'layui-this': status ==='' && tag === ''}" @click.prevent="search()">综合</a>
       <span class="fly-mid"></span>
-      <a href :class="{'layui-this':status ==='0'}" @click.prevent="search(0)">未结</a>
+      <a :class="{'layui-this': status === '0'}" @click.prevent="search(0)">未结</a>
       <span class="fly-mid"></span>
-      <a href :class="{'layui-this':status ==='1'}" @click.prevent="search(1)">已结</a>
+      <a :class="{'layui-this': status === '1'}" @click.prevent="search(1)">已结</a>
       <span class="fly-mid"></span>
-      <a href  :class="{'layui-this':status ==='' && tag === '精华'}" @click.prevent="search(2)">精华</a>
+      <a :class="{'layui-this': status === '' && tag === '精华'}" @click.prevent="search(2)">精华</a>
       <span class="fly-filter-right layui-hide-xs">
-        <a href :class="{'layui-this':sort ==='created'}" @click.prevent="search(3)">按最新</a>
+        <a :class="{'layui-this': sort === 'created'}" @click.prevent="search(3)">按最新</a>
         <span class="fly-mid"></span>
-        <a href :class="{'layui-this':sort ==='answer'}" @click.prevent="search(4)">按热议</a>
+        <a :class="{'layui-this': sort === 'answer'}" @click.prevent="search(4)">按热议</a>
       </span>
     </div>
-    <list-item :lists="lists" @nextpage="nextPage" :isEnd="isEnd"></list-item>
+    <list-item :lists="lists" :isEnd="isEnd" @nextpage="nextPage()"></list-item>
   </div>
 </template>
 
 <script>
-import listMix from '@/mixin/list'
 import ListItem from './ListItem'
+import listMix from '@/mixin/list'
 export default {
   name: 'list',
   mixins: [listMix],
   data () {
     return {
-      isEnd: false,
-      isRepeat: false,
       status: '',
       tag: '',
       sort: 'created',
       page: 0,
       limit: 20,
       catalog: '',
-      lists: [],
-      current: ''
+      isEnd: false,
+      isRepeat: false,
+      current: '',
+      lists: [
+      ]
     }
   },
   components: {
     ListItem
   },
   watch: {
-    current (newValue, oldValue) {
+    current (newval, oldval) {
+      // console.log('current: ' + oldval + ',' + newval)
+      // 去兼听current标签是否有变化，如果有变化，则需要重新进行查询
       this.init()
     },
-    '$route' (newValue, oldValue) {
-      // let catalog = this.$route.params['catalog']
-      let catalog = newValue.params['catalog']
-      if (catalog !== '' && typeof catalog !== 'undefined') {
+    '$route' (newval, oldval) {
+      let catalog = this.$route.params['catalog']
+      if (typeof catalog !== 'undefined' && catalog !== '') {
         this.catalog = catalog
       }
       this.init()
     }
   },
-
   methods: {
     search (val) {
-      if (typeof val === 'undefined' && this.current === '') { return }
-      console.log('🚀 ~ file: List.vue ~ line 97 ~ search ~ val', val)
+      if (typeof val === 'undefined' && this.current === '') {
+        return
+      }
       this.current = val
+      console.log(val)
       switch (val) {
+        // 未结贴
         case 0:
           this.status = '0'
           this.tag = ''
           break
+        // 已结贴
         case 1:
           this.status = '1'
           this.tag = ''
           break
+        // 查询"精华"标签
         case 2:
           this.status = ''
           this.tag = '精华'
           break
+        // 按照时间去查询
         case 3:
           this.sort = 'created'
           break
+        // 按照评论数去查询
         case 4:
           this.sort = 'answer'
           break
+        // 综合查询
         default:
           this.status = ''
           this.tag = ''
           this.current = ''
-          break
       }
     }
   }

@@ -5,7 +5,6 @@ import store from './store'
 
 import '@/utils/veevalidate'
 import Alert from './components/modules/alert'
-
 Vue.use(Alert)
 Vue.config.productionTip = false
 

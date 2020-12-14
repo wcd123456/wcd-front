@@ -8,6 +8,7 @@ export default {
       sort: 'created',
       page: 0,
       limit: 20,
+      isTop: 0,
       catalog: '',
       isEnd: false,
       isRepeat: false,

@@ -2,7 +2,7 @@
   <div class="fly-header layui-bg-black">
     <div class="layui-container">
       <a class="fly-logo" href="/">
-        <img src="../assets/logo-2.png" alt="layui" />
+        <img src="../assets/img/logo-2.png" alt="layui" />
       </a>
       <ul class="layui-nav fly-nav layui-hide-xs">
         <li class="layui-nav-item layui-this">
@@ -29,7 +29,7 @@
             <a class="iconfont icon-touxiang layui-hide-xs" href="../user/login.html"></a>
           </li>
           <li class="layui-nav-item">
-            <router-link :to="{name: 'login'}">登录</router-link>
+            <router-link :to="{name: 'login'}">登入</router-link>
           </li>
           <li class="layui-nav-item">
             <router-link :to="{name: 'reg'}">注册</router-link>
@@ -51,8 +51,10 @@
             ></a>
           </li>
         </template>
+
         <!-- 登入后的状态 -->
         <template v-else>
+          <!-- 调整了Hover的区域 -->
           <li class="layui-nav-item" @mouseover="show()" @mouseleave="hide()">
             <a class="fly-nav-avatar" href="javascript:;">
               <cite class="layui-hide-xs">{{userInfo.name}}</cite>
@@ -63,7 +65,10 @@
               >VIP{{userInfo.isVip}}</i>
               <img :src="userInfo.pic" />
             </a>
-            <dl class="layui-nav-child layui-anim layui-anim-upbit"  :class="{'layui-show': isHover}">
+            <dl
+              class="layui-nav-child layui-anim layui-anim-upbit"
+              :class="{'layui-show': isHover}"
+            >
               <dd>
                 <a href="user/set.html">
                   <i class="layui-icon">&#xe620;</i>基本设置

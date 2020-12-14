@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-09 10:03:41
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-14 15:39:39
--->
 <template>
   <div class="fly-footer">
     <p>
@@ -22,7 +14,7 @@
         style="position:relative;"
       >
         微信公众号
-        <img class="qr" v-if="isShow" src="../assets/qrcode-small.jpg" alt />
+        <img class="qr" v-if="isShow" src="../assets/img/qrcode-small.jpg" alt />
       </a>
     </p>
   </div>
@@ -57,4 +49,4 @@ export default {
   left: 0;
   top: -130px;
 }
- </style>
+</style>
