@@ -1,23 +1,12 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-14 17:05:46
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-14 17:05:57
--->
 <template>
-  <div>
-我的主页
-  </div>
+  <div>用户的个人首页</div>
 </template>
 
 <script>
 export default {
-  name: 'user'
+  name: 'home'
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>

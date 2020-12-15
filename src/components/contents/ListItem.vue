@@ -50,8 +50,9 @@
 </template>
 
 <script>
-import moment from 'moment'
-import 'moment/locale/zh-cn'
+import moment from 'dayjs'
+import 'dayjs/locale/zh-cn'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 import _ from 'lodash'
 export default {
@@ -109,6 +110,7 @@ export default {
         return moment(date).format('YYYY-MM-DD')
       } else {
         // 1小前，xx小时前，X天前
+        moment.extend(relativeTime)
         return moment(date).from(moment())
       }
     }

@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/Home.vue'
+import store from '@/store'
+import jwt from 'jsonwebtoken'
+import moment from 'dayjs'
 
 const Login = () => import(/* webpackChunkName: 'login' */ './views/Login.vue')
 const Reg = () => import(/* webpackChunkName: 'reg' */ './views/Reg.vue')
@@ -24,9 +27,22 @@ const Others = () =>
   import(/* webpackChunkName: 'othres' */ './components/user/Others.vue')
 const User = () =>
   import(/* webpackChunkName: 'home' */ './views/User.vue')
+const MyInfo = () =>
+  import(/* webpackChunkName: 'info' */ './components/user/common/MyInfo.vue')
+const PicUpload = () =>
+  import(/* webpackChunkName: 'uploadpic' */ './components/user/common/PicUpload.vue')
+const Passwd = () =>
+  import(/* webpackChunkName: 'password' */ './components/user/common/Passwd.vue')
+const Accounts = () =>
+  import(/* webpackChunkName: 'accounts' */ './components/user/common/Accounts.vue')
+const MyPost = () =>
+  import(/* webpackChunkName: 'mypost' */ './components/user/common/MyPost.vue')
+const MyCollection = () =>
+  import(/* webpackChunkName: 'mycollection' */ './components/user/common/MyCollection.vue')
+
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   linkExactActiveClass: 'layui-this',
   routes: [
     {
@@ -76,6 +92,7 @@ export default new Router({
     {
       path: '/center',
       component: Center,
+      meta: { requiresAuth: true },
       linkActiveClass: 'layui-this',
       children: [
         {
@@ -85,13 +102,45 @@ export default new Router({
         },
         {
           path: 'set',
-          name: 'set',
-          component: Settings
+          component: Settings,
+          children: [
+            {
+              path: '',
+              name: 'info',
+              component: MyInfo
+            },
+            {
+              path: 'pic',
+              name: 'pic',
+              component: PicUpload
+            },
+            {
+              path: 'passwd',
+              name: 'passwd',
+              component: Passwd
+            },
+            {
+              path: 'account',
+              name: 'account',
+              component: Accounts
+            }
+          ]
         },
         {
           path: 'posts',
-          name: 'posts',
-          component: Posts
+          component: Posts,
+          children: [
+            {
+              path: '',
+              name: 'mypost',
+              component: MyPost
+            },
+            {
+              path: 'mycollection',
+              name: 'mycollection',
+              component: MyCollection
+            }
+          ]
         },
         {
           path: 'msg',
@@ -107,3 +156,38 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  if (token !== '' && token !== null) {
+    const payload = jwt.decode(token)
+    if (moment().isBefore(moment(payload.exp * 1000))) {
+      // 取localStorage里面缓存的token信息 + 用户信息
+      // 8-24小时， refresh token 1个月
+      store.commit('setToken', token)
+      store.commit('setUserInfo', userInfo)
+      store.commit('setIsLogin', true)
+    } else {
+      localStorage.clear()
+    }
+  }
+  // to and from are Route Object,next() must be called to resolve the hook
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const isLogin = store.state.isLogin
+    // 需要用户登录的页面进行区别
+    if (isLogin) {
+      // 已经登录的状态
+      // 权限判断，meta元数据
+      next()
+    } else {
+      // 未登录的状态
+      next('/login')
+    }
+  } else {
+    // 公共页面，不需要用户登录
+    next()
+  }
+})
+
+export default router

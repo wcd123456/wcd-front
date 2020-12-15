@@ -161,6 +161,7 @@ export default {
         if (res.code === 200) {
           this.$store.commit('setUserInfo', res.data)
           this.$store.commit('setIsLogin', true)
+          this.$store.commit('setToken', res.token)
           this.username = ''
           this.password = ''
           this.code = ''
@@ -169,7 +170,7 @@ export default {
           })
           this.$router.push({ name: 'index' })
           // console.log(res)
-        } else if (res.code === 401) {
+        } else if (res.code !== 200) {
           this.$refs.codefield.setErrors([res.msg])
         }
       }).catch((err) => {
