@@ -30,6 +30,7 @@ localize('zh_CN', {
   names: {
     email: '邮箱',
     password: '密码',
+    repassword: '确认密码',
     name: '昵称',
     username: '账号',
     code: '验证码'
@@ -43,6 +44,13 @@ localize('zh_CN', {
     name: {
       min: (field, { length }) => {
         return `请在${field}输入至少${length}个字符`
+      }
+    },
+    password: {
+      confirmed: (field, { target }) => {
+        // console.log('TCL: target', target)
+        // console.log('TCL: field', field)
+        return `两次输入的${field}不一致！`
       }
     }
   }

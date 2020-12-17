@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/Home.vue'
 import store from '@/store'
-import jwt from 'jsonwebtoken'
+// import jwt from 'jsonwebtoken'
 import moment from 'dayjs'
 
 const Login = () => import(/* webpackChunkName: 'login' */ './views/Login.vue')
@@ -39,6 +39,12 @@ const MyPost = () =>
   import(/* webpackChunkName: 'mypost' */ './components/user/common/MyPost.vue')
 const MyCollection = () =>
   import(/* webpackChunkName: 'mycollection' */ './components/user/common/MyCollection.vue')
+const NoFound = () =>
+  import(/* webpackChunkName: 'notfound' */ './views/NotFound.vue')
+const Confirm = () =>
+  import(/* webpackChunkName: 'confirm' */ './views/Confirm.vue')
+const Reset = () =>
+  import(/* webpackChunkName: 'reset' */ './views/Reset.vue')
 
 Vue.use(Router)
 
@@ -65,6 +71,16 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/confirm',
+      name: 'confirm',
+      component: Confirm
+    },
+    {
+      path: '/reset',
+      name: 'reset',
+      component: Reset
     },
     {
       path: '/reg',
@@ -153,6 +169,14 @@ const router = new Router({
           component: Others
         }
       ]
+    },
+    {
+      path: '/404',
+      component: NoFound
+    },
+    {
+      path: '*',
+      redirect: '/404'
     }
   ]
 })
@@ -161,7 +185,10 @@ router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   const userInfo = JSON.parse(localStorage.getItem('userInfo'))
   if (token !== '' && token !== null) {
-    const payload = jwt.decode(token)
+    // method 1
+    // const payload = jwt.decode(token)
+    // method 2
+    const payload = JSON.parse(atob(token.split('.')[1]))
     if (moment().isBefore(moment(payload.exp * 1000))) {
       // 取localStorage里面缓存的token信息 + 用户信息
       // 8-24小时， refresh token 1个月

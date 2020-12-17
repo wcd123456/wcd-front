@@ -53,7 +53,6 @@
 import moment from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import relativeTime from 'dayjs/plugin/relativeTime'
-
 import _ from 'lodash'
 export default {
   name: 'listitem',

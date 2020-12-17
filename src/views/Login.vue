@@ -159,6 +159,9 @@ export default {
         sid: this.$store.state.sid
       }).then((res) => {
         if (res.code === 200) {
+          // 存储用户的登录名
+          res.data.username = this.username
+          console.log('TCL: submit -> res.data', res.data)
           this.$store.commit('setUserInfo', res.data)
           this.$store.commit('setIsLogin', true)
           this.$store.commit('setToken', res.token)
