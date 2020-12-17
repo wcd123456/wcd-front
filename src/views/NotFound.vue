@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-15 16:00:49
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-15 16:12:47
--->
 <template>
   <div class="layui-container flex">
     <img src="../assets/img/icon-404.png" width="100px" alt />

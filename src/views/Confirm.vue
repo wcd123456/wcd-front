@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-15 16:11:44
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-17 15:27:15
--->
 <template>
   <div class="layui-container flex">
     <div class="layui-row font pb3">确定更新账号为：{{username}}吗？</div>

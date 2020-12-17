@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-09 10:03:40
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-16 16:55:35
--->
 <template>
   <div id="app">
     <imooc-header></imooc-header>
@@ -27,6 +19,7 @@ export default {
 
 <style lang="scss">
 @import "assets/css/global.css";
+@import "assets/css/layui-layer/layer.css";
 // @import "assets/css/utilities.scss";
 
 // 公用样式
@@ -57,14 +50,14 @@ export default {
   .pt#{$i} {
     padding-top: $i * 10 + px !important;
   }
-  .pb#{$i} {
-    padding-bottom: $i * 10 + px !important;
-  }
   .pl#{$i} {
     padding-left: $i * 10 + px !important;
   }
   .pr#{$i} {
     padding-right: $i * 10 + px !important;
+  }
+  .pb#{$i} {
+    padding-bottom: $i * 10 + px !important;
   }
   .mr#{$i} {
     margin-right: $i * 10 + px !important;

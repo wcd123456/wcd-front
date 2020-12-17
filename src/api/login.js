@@ -21,7 +21,7 @@ const getCode = (sid) => {
  * @param {} option 用户信息（邮箱，验证码）
  */
 const forget = (option) => {
-  return axios.post('/login/forget', {
+  return axios.post('/forget', {
     ...option
   })
 }
@@ -45,11 +45,13 @@ const reg = (regInfo) => {
     ...regInfo
   })
 }
+
 /**
  * 重置密码接口
  * @param {*} info 重置密码信息
  */
 const reset = (info) => axios.post('/login/reset', { ...info })
+
 export {
   getCode,
   forget,
