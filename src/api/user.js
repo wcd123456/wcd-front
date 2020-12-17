@@ -10,8 +10,13 @@ const updateUserInfo = (data) => axios.post('/user/basic', data)
 const updateUsername = (options) => {
   return axios.get('/user/updatename?' + qs.stringify(options))
 }
+// 修改用户密码
+const changePasswd = (data) => axios.post('/user/change-password', {
+  ...data
+})
 export {
   userSign,
   updateUserInfo,
-  updateUsername
+  updateUsername,
+  changePasswd
 }

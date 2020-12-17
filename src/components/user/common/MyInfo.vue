@@ -89,14 +89,17 @@ export default {
     }
   },
   mounted () {
-    let { username, name, location, gender, regmark } = this.$store.state.userInfo
-    this.username = username || ''
-    this.name = name || ''
-    this.location = location || ''
-    this.gender = gender || ''
-    this.regmark = regmark || ''
+    this.init()
   },
   methods: {
+    init () {
+      let { username, name, location, gender, regmark } = this.$store.state.userInfo
+      this.username = username || ''
+      this.name = name || ''
+      this.location = location || ''
+      this.gender = gender || ''
+      this.regmark = regmark || ''
+    },
     async submit () {
       const isValid = await this.$refs.observer.validate()
       if (!isValid) {
@@ -111,8 +114,13 @@ export default {
         regmark: this.regmark
       }).then((res) => {
         if (res.code === 200) {
+          this.$store.commit('setUserInfo', { ...this.$store.state.userInfo, ...{ username: this.username, name: this.name, location: this.location, gender: this.gender, regmark: this.regmark } })
           this.$alert('更新成功！')
         }
+      }).catch((err) => {
+        console.log(err)
+        this.$alert('邮件发送失败,请检查邮件是否存在')
+        this.init()
       })
     }
   }
