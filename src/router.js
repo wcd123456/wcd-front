@@ -109,8 +109,9 @@ const router = new Router({
       meta: { requiresAuth: true }// 需要登陆才能访问
     },
     {
-      path: '/detail',
+      path: '/detail/:tid',
       name: 'detail',
+      props: true,
       component: Detail
     },
     {

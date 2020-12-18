@@ -205,6 +205,8 @@
 </template>
 
 <script>
+import { getDetail } from '@/api/content'
+import { getComments } from '@/api/comments'
 import HotList from '@/components/sidebar/HotList'
 import Ads from '@/components/sidebar/Ads'
 import Links from '@/components/sidebar/Links'
@@ -216,13 +218,7 @@ import Pagination from '@/components/modules/pagination/Index'
 export default {
   name: 'Detail',
   mixins: [CodeMix],
-  data () {
-    return {
-      total: 101,
-      size: 15,
-      current: 6
-    }
-  },
+  props: ['tid'],
   components: {
     'imooc-hotlist': HotList,
     'imooc-ads': Ads,
@@ -231,10 +227,29 @@ export default {
     'imooc-edit': Editor,
     'imooc-page': Pagination
   },
+  data () {
+    return {
+      total: 101,
+      size: 15,
+      current: 6,
+      page: {},
+      comments: []
+    }
+  },
+  mounted () {
+    this.getPostDetail()
+    this.getCommentsList()
+  },
   methods: {
     handleChange (val) {
       console.log('🚀 ~ file: Detail.vue ~ line 229 ~ handleChange ~ val', val)
       this.current = val
+    },
+    getPostDetail () {
+      getDetail(this.tid).then((res) => { console.log(res) })
+    },
+    getCommentsList () {
+      getComments(this.tid).then((res) => { console.log(res) })
     }
   }
 }
@@ -251,5 +266,8 @@ export default {
   span {
     margin-right: 5px;
   }
+}
+.jieda-body {
+    margin: 25px 0 20px;
 }
 </style>
