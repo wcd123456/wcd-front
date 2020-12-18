@@ -108,12 +108,10 @@
 </template>
 
 <script>
-import { forget } from '@/api/login'
-import CodeMix from '@/mixin/code'
+import { getCode, forget } from '@/api/login'
 import { ValidationProvider } from 'vee-validate'
 export default {
   name: 'forget',
-  mixins: [CodeMix],
   components: {
     ValidationProvider
   },
@@ -125,8 +123,17 @@ export default {
     }
   },
   mounted () {
+    this._getCode()
   },
   methods: {
+    _getCode () {
+      getCode().then(res => {
+        // console.log(res)
+        if (res.code === 200) {
+          this.svg = res.data
+        }
+      })
+    },
     submit () {
       forget({
         username: this.username,

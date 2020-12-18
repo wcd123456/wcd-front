@@ -1,12 +1,20 @@
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: wcd
+ * @Date: 2020-12-18 10:16:46
+ * @LastEditors: wcd
+ * @LastEditTime: 2020-12-18 14:03:17
+-->
 <template>
   <transition name="fade">
-    <div class="layui-layer layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
+    <div class="layui-layer-page  layui-layer-border layui-layer-prompt edit-content" v-show="isShow">
       <div class="layui-layer-title">请贴入代码或任意文本</div>
       <div class="layui-layer-content">
         <textarea
           class="layui-layer-input"
           v-model="code"
-          id="inputItem"
+          id="codeInput"
           v-on:keydown.enter="$event.stopPropagation()"
           :style="{'width': this.width + 'px', 'height': this.height + 'px'}"
         ></textarea>
@@ -34,7 +42,7 @@ export default {
   methods: {
     submit () {
       if (this.code === '') {
-        document.getElementById('inputItem').focus()
+        document.getElementById('codeInput').focus()
         this.$pop('shake', '请输入引用内容')
         return
       }

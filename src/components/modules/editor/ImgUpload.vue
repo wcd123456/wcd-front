@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="layui-layer layui-layer-page layui-layer-border edit-content" v-show="isShow">
+    <div class="layui-layer-page layui-layer-border edit-content" v-show="isShow">
       <div class="layui-layer-title">插入图片</div>
       <div class="layui-layer-content">
         <ul class="layui-form layui-form-pane">
@@ -84,7 +84,7 @@ export default {
         this.$pop('shake', '请上传图片或者复制图片链接')
         return
       }
-      this.$emit('addEvent', this.name)
+      this.$emit('addEvent', this.pic)
       setTimeout(() => {
         // 恢复初始的状态
         this.pic = ''

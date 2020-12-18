@@ -104,7 +104,8 @@ const router = new Router({
     {
       path: '/add',
       name: 'add',
-      component: Add
+      component: Add,
+      meta: { requiresAuth: true }// 需要登陆才能访问
     },
     {
       path: '/user/:uid',

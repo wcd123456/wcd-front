@@ -110,11 +110,10 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { login } from '@/api/login'
-import CodeMix from '@/mixin/code'
+import { getCode, login } from '@/api/login'
+import uuid from 'uuid/v4'
 export default {
   name: 'login',
-  mixins: [CodeMix],
   components: {
     ValidationProvider,
     ValidationObserver
@@ -127,7 +126,26 @@ export default {
       svg: ''
     }
   },
+  mounted () {
+    let sid = ''
+    if (localStorage.getItem('sid')) {
+      sid = localStorage.getItem('sid')
+    } else {
+      sid = uuid()
+      localStorage.setItem('sid', sid)
+    }
+    this.$store.commit('setSid', sid)
+    this._getCode()
+  },
   methods: {
+    _getCode () {
+      let sid = this.$store.state.sid
+      getCode(sid).then((res) => {
+        if (res.code === 200) {
+          this.svg = res.data
+        }
+      })
+    },
     async submit () {
       const isValid = await this.$refs.observer.validate()
       if (!isValid) {
@@ -143,7 +161,6 @@ export default {
         if (res.code === 200) {
           // 存储用户的登录名
           res.data.username = this.username
-          console.log('TCL: submit -> res.data', res.data)
           this.$store.commit('setUserInfo', res.data)
           this.$store.commit('setIsLogin', true)
           this.$store.commit('setToken', res.token)
@@ -151,7 +168,7 @@ export default {
           this.password = ''
           this.code = ''
           requestAnimationFrame(() => {
-            this.$refs.observer.reset()
+            this.$refs.observer && this.$refs.observer.reset()
           })
           this.$router.push({ name: 'index' })
           // console.log(res)

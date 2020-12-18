@@ -8,7 +8,8 @@ export default new Vuex.Store({
     sid: '',
     isLogin: false,
     token: '',
-    userInfo: {}
+    userInfo: {},
+    isHide: false
   },
   mutations: {
     setSid (state, value) {
@@ -28,6 +29,10 @@ export default new Vuex.Store({
     // 设置isLogin的状态
     setIsLogin (state, value) {
       state.isLogin = value
+    },
+    // 设置container的状态
+    setHide (state, value) {
+      state.isHide = value
     }
   },
   actions: {

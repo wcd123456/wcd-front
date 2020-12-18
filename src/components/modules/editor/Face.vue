@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="layui-layer layui-layer-tips layui-edit-face edit-content" v-show="isShow">
+    <div class="layui-layer-tips layui-layer-border layui-edit-face edit-content" v-show="isShow">
       <div class="layui-layer-content">
         <ul class="layui-clear">
           <li v-for="(value, key) in lists" :key="key" @click="handleFaceClick(key)">

@@ -149,25 +149,37 @@
 </template>
 
 <script>
-import { reg } from '@/api/login'
+import { getCode, reg } from '@/api/login'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import CodeMix from '@/mixin/code'
+
 export default {
   name: 'reg',
-  mixins: [CodeMix],
   data () {
     return {
       username: '',
       name: '',
       password: '',
-      repassword: ''
+      repassword: '',
+      code: '',
+      svg: ''
     }
   },
   components: {
     ValidationProvider,
     ValidationObserver
   },
+  mounted () {
+    this._getCode()
+  },
   methods: {
+    _getCode () {
+      let sid = this.$store.state.sid
+      getCode(sid).then((res) => {
+        if (res.code === 200) {
+          this.svg = res.data
+        }
+      })
+    },
     async submit () {
       const isValid = await this.$refs.observer.validate()
       if (!isValid) {

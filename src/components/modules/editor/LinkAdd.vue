@@ -1,9 +1,17 @@
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: wcd
+ * @Date: 2020-12-18 10:16:46
+ * @LastEditors: wcd
+ * @LastEditTime: 2020-12-18 14:10:21
+-->
 <template>
   <transition name="fade">
-    <div class="layui-layer layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
+    <div class="layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
       <div class="layui-layer-title">请输入合法链接</div>
       <div class="layui-layer-content">
-        <input type="text" class="layui-layer-input" id="inputItem" v-model="link" />
+        <input type="text" class="layui-layer-input" id="linkInput" v-model="link" />
       </div>
       <span class="layui-layer-setwin" @click="cancel()">
         <a href="javascript:void(0)" class="layui-layer-ico layui-layer-close layui-layer-close1"></a>
@@ -28,11 +36,11 @@ export default {
   methods: {
     submit () {
       if (this.link === '') {
-        document.getElementById('inputItem').focus()
+        document.getElementById('linkInput').focus()
         this.$pop('shake', '请输入合法的链接')
         return
       }
-      this.$emit('addEvent')
+      this.$emit('addEvent', this.link)
       setTimeout(() => {
         this.link = ''
         this.$emit('closeEvent')

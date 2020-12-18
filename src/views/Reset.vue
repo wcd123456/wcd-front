@@ -111,12 +111,11 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { reset } from '@/api/login'
-import CodeMix from '@/mixin/code'
+import { getCode, reset } from '@/api/login'
 import { getParam } from '@/utils/common'
+import uuid from 'uuid/v4'
 export default {
   name: 'reset',
-  mixins: [CodeMix],
   components: {
     ValidationProvider,
     ValidationObserver
@@ -125,13 +124,32 @@ export default {
     return {
       key: '',
       password: '',
-      repassword: ''
+      repassword: '',
+      code: '',
+      svg: ''
     }
   },
   mounted () {
+    let sid = ''
+    if (localStorage.getItem('sid')) {
+      sid = localStorage.getItem('sid')
+    } else {
+      sid = uuid()
+      localStorage.setItem('sid', sid)
+    }
+    this.$store.commit('setSid', sid)
+    this._getCode()
     this.key = getParam('key')
   },
   methods: {
+    _getCode () {
+      let sid = this.$store.state.sid
+      getCode(sid).then(res => {
+        if (res.code === 200) {
+          this.svg = res.data
+        }
+      })
+    },
     async submit () {
       const isValid = await this.$refs.observer.validate()
       if (!isValid) {

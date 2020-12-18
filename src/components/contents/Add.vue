@@ -1,5 +1,5 @@
 <template>
-  <div class="layui-container fly-marginTop">
+  <div class="layui-container fly-marginTop" :class="{'d-hide': isHide}">
     <div class="fly-panel" pad20 style="padding-top: 5px;">
       <!--<div class="fly-none">没有权限</div>-->
       <div class="layui-form layui-form-pane">
@@ -16,6 +16,12 @@
                 <validation-observer ref="observer" v-slot="{ validate }">
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
+                      <validation-provider
+                      name="catalog"
+                      rules="is_not:请选择"
+                      v-slot="{errors}"
+                    >
+                      <div class="layui-row">
                       <label class="layui-form-label">所在专栏</label>
                       <div class="layui-input-block" @click="()=>{isSelect = !isSelect}">
                         <div
@@ -42,24 +48,36 @@
                           </dl>
                         </div>
                       </div>
+                      </div>
+                       <div class="layui-row">
+                        <span style="color: #c00;">{{errors[0]}}</span>
+                      </div>
+                      </validation-provider>
                     </div>
                     <div class="layui-col-md9">
-                      <label for="L_title" class="layui-form-label">标题</label>
+                    <validation-provider
+                      name="title"
+                      rules="required"
+                      v-slot="{errors}"
+                    >
+                      <div class="layui-row">
+                        <label for="L_title" class="layui-form-label">标题</label>
                       <div class="layui-input-block">
                         <input
                           type="text"
-                          id="L_title"
-                          name="title"
-                          required
-                          lay-verify="required"
-                          autocomplete="off"
+                          v-model="title"
                           class="layui-input"
                         />
                         <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
                       </div>
+                      </div>
+                       <div class="layui-row">
+                        <span style="color: #c00;">{{errors[0]}}</span>
+                      </div>
+                      </validation-provider>
                     </div>
                   </div>
-                  <editor></editor>
+                  <editor @changeContent="add" :initContent="content"></editor>
                   <div class="layui-form-item">
                     <div class="layui-inline">
                       <label class="layui-form-label">悬赏飞吻</label>
@@ -121,7 +139,7 @@
                     </validation-provider>
                   </div>
                   <div class="layui-form-item">
-                    <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                    <button type="buttom" class="layui-btn"  @click.prevent="validate().then(submit)">立即发布</button>
                   </div>
                 </validation-observer>
               </form>
@@ -134,6 +152,7 @@
 </template>
 
 <script>
+import { addPost } from '@/api/content'
 import CodeMix from '@/mixin/code'
 import Editor from '../modules/editor/Index'
 export default {
@@ -170,10 +189,25 @@ export default {
           value: 'advise'
         }
       ],
-      favList: [20, 30, 50, 60, 80]
+      favList: [20, 30, 50, 60, 80],
+      content: '',
+      title: ''
     }
   },
   mounted () {
+    const saveData = localStorage.getItem('addData')
+    if (saveData && saveData !== '') {
+      this.$confirm('是否加载为编辑完的内容', () => {
+        const obj = JSON.parse(saveData)
+        this.content = obj.content
+        this.title = obj.title
+        this.cataIndex = obj.cataIndex
+        this.favIndex = obj.favIndex
+      }, () => {
+        localStorage.setItem('addData', '')
+      }
+      )
+    }
   },
   methods: {
     chooseCatalog (item, index) {
@@ -181,6 +215,52 @@ export default {
     },
     chooseFav (item, index) {
       this.favIndex = index
+    },
+    add (val) {
+      this.content = val
+      const savaDate = {
+        title: this.title,
+        cataIndex: this.cataIndex,
+        content: this.content,
+        favIndex: this.favIndex
+      }
+      if (this.title.trim() !== '' && this.content.trim() !== '') {
+        localStorage.setItem('addData', JSON.stringify(savaDate))
+      }
+    },
+    async submit () {
+      const isValid = await this.$refs.observer.validate()
+      if (!isValid) {
+        // ABORT!!
+      }
+      // 添加新的文章
+      if (this.content.trim() === '') {
+        this.$alert('文章内容不能为空')
+        return
+      }
+      addPost({
+        title: this.title,
+        catalog: this.catalogs[this.cataIndex].value,
+        content: this.content,
+        fav: this.favList[this.favIndex],
+        code: this.code,
+        sid: this.$store.state.sid
+      }).then(res => {
+        if (res.code === 200) {
+          localStorage.setItem('addData', '')
+          this.$alert(res.msg + '~两秒后跳转')
+          setTimeout(() => {
+            this.$router.push({ name: 'index' })
+          }, 2000)
+        } else {
+          this.$alert(res.msg)
+        }
+      })
+    }
+  },
+  computed: {
+    isHide () {
+      return this.$store.state.isHide
     }
   }
 }
