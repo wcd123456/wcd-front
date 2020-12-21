@@ -220,7 +220,7 @@
 
 <script>
 import { getDetail } from '@/api/content'
-import { getComents, addComment } from '@/api/comments'
+import { getComents, addComment, updateComment } from '@/api/comments'
 import HotList from '@/components/sidebar/HotList'
 import Ads from '@/components/sidebar/Ads'
 import Links from '@/components/sidebar/Links'
@@ -306,9 +306,52 @@ export default {
         this.$pop('shake', '请先登录')
         return
       }
+      // 用户禁言状态判断
+      const user = this.$store.state.userInfo
+      if (user.status !== '0') {
+        this.$pop('shake', '用户已经禁言，请联系管理员')
+        return
+      }
       this.editInfo.code = this.code
       this.editInfo.sid = this.$store.state.sid
       this.editInfo.tid = this.tid
+      // 获取评论用户的信息：图片，昵称，vip状态
+      const cuid = {
+        _id: user._id,
+        pic: user.pic,
+        name: user.name,
+        isVip: user.isVip
+      }
+
+      if (typeof this.editInfo.cid !== 'undefined' && this.editInfo.cid !== '') {
+        const obj = { ...this.editInfo }
+        delete obj['item']
+        // 判断用户是否修改了内容
+        if (this.editInfo.content === this.editInfo.item.content) {
+          this.$pop('shake', '确定编辑内容~~~')
+          return
+        }
+        // 更新评论
+        updateComment(obj).then((res) => {
+          if (res.code === 200) {
+            const temp = this.editInfo.item
+            temp.content = this.editInfo.content
+            this.$pop('', '更新评论成功')
+            this.code = ''
+            this.editInfo.content = ''
+            // 方法一，只用更新特定的一条content created，$set
+            // 方法二，更新整个数组中的这一条
+            // res.data.cuid = cuid
+            this.comments.splice(this.comments.indexOf(this.editInfo.item), 1, temp)
+            requestAnimationFrame(() => {
+              this.$refs.observer && this.$refs.observer.reset()
+            })
+            // 刷新图形验证码
+            this._getCode()
+          }
+        })
+        return
+      }
       // 添加评论
       addComment(this.editInfo).then((res) => {
         if (res.code === 200) {
@@ -316,13 +359,6 @@ export default {
           // 发表评论成功后，清空回复内容
           this.code = ''
           this.editInfo.content = ''
-          const user = this.$store.state.userInfo
-          const cuid = {
-            _id: user._id,
-            pic: user.pic,
-            name: user.name,
-            isVip: user.isVip
-          }
           res.data.cuid = cuid
           // 添加新的评论到评论列表
           this.comments.push(res.data)
@@ -335,9 +371,14 @@ export default {
       })
     },
     editComment (item) {
+      this.editInfo.item = item
       this.editInfo.content = item.content
+
+      // 滚动到编辑窗口位置
       scrollToElem('.layui-input-block', 500, -65)
       document.getElementById('edit').focus()
+      // 确定需要编辑的记录
+      this.editInfo.cid = item._id
     },
     setBest (item) {
       this.$confirm('确定采纳为最佳答案吗？', () => {

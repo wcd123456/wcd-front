@@ -5,8 +5,10 @@ import qs from 'qs'
 const getComents = (params) => axios.get('/public/comments?' + qs.stringify(params))
 // 添加评论
 const addComment = (data) => axios.post('/comments/reply', { ...data })
+// 更新评论
+const updateComment = (data) => axios.post('/comments/update', { ...data })
 
 export {
   getComents,
-  addComment
+  addComment, updateComment
 }
