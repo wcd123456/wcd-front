@@ -5,36 +5,59 @@
   >
     <div class="layui-box layui-laypage layui-laypage-default">
       <a
+        href="javascript:;"
         class="layui-laypage-prev"
-        v-show="showEnd" :class="{'layui-disabled':current === 0}" @click.prevent="home()"
+        :class="{'layui-disabled': current === 0}"
+        v-show="showEnd"
+        @click.prevent="home()"
       >
         <i class="layui-icon layui-icon-prev" v-if="showType === 'icon'"></i>
         <template v-else>首页</template>
       </a>
-      <a :class="{'layui-disabled':current === 0}" @click.prevent="prev()">
+      <a :class="{'layui-disabled': current === 0}" @click.prevent="prev()">
         <i class="layui-icon layui-icon-left" v-if="showType === 'icon'"></i>
         <template v-else>上一页</template>
       </a>
-      <!-- current+2<pages.length 显示... -->
-      <!-- current-2>1 显示... -->
-      <!-- :key需要显示真实节点 -->
-      <a v-if="pages.length>5 && (current + 1 - 2) > 1" class="layui-disabled">...</a>
+      <!-- current + 2 < pages.length 显示 ... -->
+      <!-- current - 2 > 1 显示 ... -->
+      <a
+        v-if="pages.length > 5 && (current + 1 - 2) > 1"
+        href="javascript:;"
+        class="layui-disabled"
+      >...</a>
       <template v-for="(item,index) in pages">
-        <a v-if="item >= (current + 1 - 2) && item <= (current + 1 + 2)" href="javascript:;" :key="'pages'+index" :class="[current===index ? theme: '', current===index ? 'active': '']" @click="changeIndex(item)">{{item}}</a>
+        <a
+          @click="changeIndex(index)"
+          v-if="(item>=(current + 1 - 2) && item <=(current + 1 + 2)) || (current  < 2 && item <= dist) || (current > pages.length - dist + 1 && item > pages.length - dist)"
+          href="javascript:;"
+          :key="'page' + index"
+          :class="[current === index ? theme : '',current === index ? 'active': '']"
+        >{{item}}</a>
       </template>
-      <a v-if="pages.length > 5 && (current + 1 + 2) < pages.length"  class="layui-disabled">...</a>
-      <a  :class="{'layui-disabled':current === (pages.length - 1)}" @click.prevent="next()">
+      <a
+        v-if="pages.length > 5 && (current + 1 + 2) < pages.length"
+        href="javascript:;"
+        class="layui-disabled"
+      >...</a>
+      <a :class="{'layui-disabled': current === pages.length - 1}" @click.prevent="next()">
         <i class="layui-icon layui-icon-right" v-if="showType === 'icon'"></i>
         <template v-else>下一页</template>
       </a>
-      <a  class="layui-laypage-next" v-show="showEnd" :class="{'layui-disabled':current === (pages.length - 1)}" @click.prevent="end()">
+      <a
+        href="javascript:;"
+        class="layui-laypage-next"
+        v-show="showEnd"
+        :class="{'layui-disabled': current === pages.length - 1}"
+        @click.prevent="end()"
+      >
         <i class="layui-icon layui-icon-next" v-if="showType === 'icon'"></i>
         <template v-else>尾页</template>
       </a>
     </div>
     <div class="total" v-if="hasTotal">
       到第
-      <input type="text" class="imooc-input" />页 共 total 页
+      <input type="text" class="imooc-input text-center" @keyup.enter="jumpTo" />
+      页 共 {{totalPages}} 页
     </div>
     <div v-if="hasSelect">
       <div
@@ -86,11 +109,11 @@ export default {
       default: 'layui-bg-green'
     },
     hasTotal: {
-      tyle: Boolean,
+      type: Boolean,
       default: false
     },
     hasSelect: {
-      tyle: Boolean,
+      type: Boolean,
       default: false
     },
     total: {
@@ -104,6 +127,10 @@ export default {
     size: {
       type: Number,
       default: 10
+    },
+    dist: {
+      type: Number,
+      default: 5
     }
   },
   data () {
@@ -115,23 +142,35 @@ export default {
       limit: 10
     }
   },
+  watch: {
+    total (newval, oldval) {
+      this.initPages()
+    }
+  },
+  computed: {
+    totalPages () {
+      return Math.ceil(this.total / this.limit)
+    }
+  },
   mounted () {
-    this.limit = this.size
     // 初始化分页的长度
-    this.initPages()
     // 设置select的内容
+    this.limit = this.size
+    this.initPages()
     this.options = _.uniq(_.sortBy(_.concat(this.options, this.size)))
     this.optIndex = this.options.indexOf(this.size)
   },
   methods: {
     initPages () {
-      const len = Math.ceil(this.total / this.limit)// 有多少页
+      const len = this.totalPages
+      // 5 -> [1,2,3,4,5]
       this.pages = _.range(1, len + 1)
     },
     chooseFav (item, index) {
       if (this.optIndex !== index) {
         // 当页面上的limit发生变化之后，调整current数值
-        this.$emit('changeCurrent', Math.ceil(this.limit * this.current / this.options[index]))
+        this.$emit('changeCurrent', Math.floor(this.limit * this.current / this.options[index]))
+        this.$emit('changeLimit', this.options[index])
       }
       this.optIndex = index
       this.limit = this.options[this.optIndex]
@@ -148,7 +187,7 @@ export default {
     },
     prev () {
       let cur = 0
-      if ((this.current - 1) < 0) {
+      if (this.current - 1 < 0) {
         cur = 0
       } else {
         cur = this.current - 1
@@ -157,7 +196,7 @@ export default {
     },
     next () {
       let cur = 0
-      if ((this.current + 1) > this.pages.length) {
+      if (this.current + 1 > this.pages.length) {
         cur = this.pages.length - 1
       } else {
         cur = this.current + 1
@@ -165,7 +204,21 @@ export default {
       this.$emit('changeCurrent', cur)
     },
     changeIndex (val) {
-      this.$emit('changeCurrent', val - 1)
+      if (val !== this.current) {
+        this.$emit('changeCurrent', val)
+      }
+    },
+    jumpTo (event) {
+      const result = event.target.value
+      let cur = this.current
+      if (result > (this.current + 1) || result < 0) {
+        this.$pop('shake', '请输入正确的页码')
+      } else {
+        cur = result - 1
+      }
+      if (cur !== this.current) {
+        this.$emit('changeCurrent', cur)
+      }
     }
   }
 }

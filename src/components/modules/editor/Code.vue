@@ -1,14 +1,6 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-18 10:16:46
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-18 14:03:17
--->
 <template>
   <transition name="fade">
-    <div class="layui-layer-page  layui-layer-border layui-layer-prompt edit-content" v-show="isShow">
+    <div class="layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
       <div class="layui-layer-title">请贴入代码或任意文本</div>
       <div class="layui-layer-content">
         <textarea

@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-18 10:16:46
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-18 11:44:43
--->
 <template>
   <div class="fly-panel fly-column">
     <div class="layui-container">
@@ -26,7 +18,7 @@
         <!-- 用户登入后显示 -->
         <template v-if="isLogin">
           <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-            <a href="user/index.html">我发表的贴</a>
+            <a href>我发表的贴</a>
           </li>
           <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
             <a href="user/index.html#collection">我收藏的贴</a>
@@ -38,13 +30,13 @@
         <span class="fly-search">
           <i class="layui-icon"></i>
         </span>
-        <router-link :to="{'name':'add'}" class="layui-btn">发表新帖</router-link>
+        <router-link :to="{'name': 'add'}" class="layui-btn">发表新帖</router-link>
       </div>
       <div
         class="layui-hide-sm layui-show-xs-block"
         style="margin-top: -10px; padding-bottom: 10px; text-align: center;"
       >
-       <router-link :to="{'name':'add'}" class="layui-btn">发表新帖</router-link>
+        <router-link :to="{'name': 'add'}" class="layui-btn">发表新帖</router-link>
       </div>
     </div>
   </div>

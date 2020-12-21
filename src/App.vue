@@ -89,6 +89,7 @@ export default {
   overflow: hidden;
   height: 0;
 }
+
 .d-flex {
   display: flex;
   flex-flow: row nowrap;

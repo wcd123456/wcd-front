@@ -1,6 +1,5 @@
 import { extend, localize } from 'vee-validate'
-
-// eslint-disable-next-line camelcase
+// eslint-disable-next-line
 import { required, email, min, length, confirmed, max, is_not } from 'vee-validate/dist/rules'
 import zh from 'vee-validate/dist/locale/zh_CN.json'
 
@@ -11,6 +10,7 @@ extend('length', length)
 extend('confirmed', confirmed)
 extend('max', max)
 extend('is_not', is_not)
+
 // Custom validate
 extend('name', {
   validate: value => {

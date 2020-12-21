@@ -1,9 +1,12 @@
 import axios from '@/utils/request'
+import qs from 'qs'
+
 // 获取文章中的评论列表
-const getComments = (tid) => {
-  return axios.get('/public/list?' + tid)
-}
+const getComents = (params) => axios.get('/public/comments?' + qs.stringify(params))
+// 添加评论
+const addComment = (data) => axios.post('/comments/reply', { ...data })
 
 export {
-  getComments
+  getComents,
+  addComment
 }

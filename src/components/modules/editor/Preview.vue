@@ -1,26 +1,6 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-18 10:16:46
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-18 14:07:07
--->
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-18 10:16:46
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-18 10:26:44
--->
 <template>
   <transition name="fade">
-    <div
-      id="preview"
-      class=" layui-layer-page layui-layer-prompt edit-content"
-      v-show="isShow"
-    >
+    <div id="preview" class="layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
       <div class="layui-layer-title">预览</div>
       <div class="layui-layer-content">
         <div class="detail-body" v-html="replaceContent"></div>

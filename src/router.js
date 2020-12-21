@@ -46,9 +46,10 @@ const Confirm = () =>
 const Reset = () =>
   import(/* webpackChunkName: 'reset' */ './views/Reset.vue')
 const Add = () =>
-  import(/* webpackChunkName: 'reset' */ './components//contents/Add.vue')
+  import(/* webpackChunkName: 'reset' */ './components/contents/Add.vue')
 const Detail = () =>
   import(/* webpackChunkName: 'detail' */ './components/contents/Detail.vue')
+
 Vue.use(Router)
 
 const router = new Router({
@@ -106,7 +107,7 @@ const router = new Router({
       path: '/add',
       name: 'add',
       component: Add,
-      meta: { requiresAuth: true }// 需要登陆才能访问
+      meta: { requiresAuth: true }
     },
     {
       path: '/detail/:tid',

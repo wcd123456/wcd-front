@@ -27,11 +27,11 @@ const getLinks = () => {
 // 图片上传接口
 const uploadImg = (formData) => axios.post('/content/upload', formData)
 
-// 发布帖子
+// 发贴接口
 const addPost = (data) => axios.post('/content/add', { ...data })
 
-// 获取详情
-const getDetail = (tid) => axios.get('/public/content/detail?' + tid)
+// 获取文章详情
+const getDetail = (tid) => axios.get('/public/content/detail?tid=' + tid)
 
 export {
   getList,

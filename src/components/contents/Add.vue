@@ -16,64 +16,52 @@
                 <validation-observer ref="observer" v-slot="{ validate }">
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
-                      <validation-provider
-                      name="catalog"
-                      rules="is_not:请选择"
-                      v-slot="{errors}"
-                    >
-                      <div class="layui-row">
-                      <label class="layui-form-label">所在专栏</label>
-                      <div class="layui-input-block" @click="()=>{isSelect = !isSelect}">
-                        <div
-                          class="layui-unselect layui-form-select"
-                          :class="{'layui-form-selected': isSelect}"
-                        >
-                          <div class="layui-select-title">
-                            <input
-                              type="text"
-                              placeholder="请选择"
-                              readonly
-                              v-model="catalogs[cataIndex].text"
-                              class="layui-input layui-unselect"
-                            />
-                            <i class="layui-edge"></i>
+                      <validation-provider name="catalog" rules="is_not:请选择" v-slot="{errors}">
+                        <div class="layui-row">
+                          <label class="layui-form-label">所在专栏</label>
+                          <div class="layui-input-block" @click="changeSelect()">
+                            <div
+                              class="layui-unselect layui-form-select"
+                              :class="{'layui-form-selected': isSelect}"
+                            >
+                              <div class="layui-select-title">
+                                <input
+                                  type="text"
+                                  placeholder="请选择"
+                                  readonly
+                                  v-model="catalogs[cataIndex].text"
+                                  class="layui-input layui-unselect"
+                                />
+                                <i class="layui-edge"></i>
+                              </div>
+                              <dl class="layui-anim layui-anim-upbit">
+                                <dd
+                                  v-for="(item,index) in catalogs"
+                                  :key="'catalog' + index"
+                                  @click="chooseCatalog(item, index)"
+                                  :class="{'layui-this': index === cataIndex}"
+                                >{{item.text}}</dd>
+                              </dl>
+                            </div>
                           </div>
-                          <dl class="layui-anim layui-anim-upbit">
-                            <dd
-                              v-for="(item,index) in catalogs"
-                              :key="'catalog' + index"
-                              @click="chooseCatalog(item, index)"
-                              :class="{'layui-this': index === cataIndex}"
-                            >{{item.text}}</dd>
-                          </dl>
                         </div>
-                      </div>
-                      </div>
-                       <div class="layui-row">
-                        <span style="color: #c00;">{{errors[0]}}</span>
-                      </div>
+                        <div class="layui-row">
+                          <span style="color: #c00;">{{errors[0]}}</span>
+                        </div>
                       </validation-provider>
                     </div>
                     <div class="layui-col-md9">
-                    <validation-provider
-                      name="title"
-                      rules="required"
-                      v-slot="{errors}"
-                    >
-                      <div class="layui-row">
-                        <label for="L_title" class="layui-form-label">标题</label>
-                      <div class="layui-input-block">
-                        <input
-                          type="text"
-                          v-model="title"
-                          class="layui-input"
-                        />
-                        <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
-                      </div>
-                      </div>
-                       <div class="layui-row">
-                        <span style="color: #c00;">{{errors[0]}}</span>
-                      </div>
+                      <validation-provider name="title" rules="required" v-slot="{errors}">
+                        <div class="layui-row">
+                          <label for="L_title" class="layui-form-label">标题</label>
+                          <div class="layui-input-block">
+                            <input type="text" class="layui-input" v-model="title" />
+                            <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
+                          </div>
+                        </div>
+                        <div class="layui-row">
+                          <span style="color: #c00;">{{errors[0]}}</span>
+                        </div>
                       </validation-provider>
                     </div>
                   </div>
@@ -85,7 +73,7 @@
                         <div
                           class="layui-unselect layui-form-select"
                           :class="{'layui-form-selected': isSelect_fav}"
-                          @click="()=>{isSelect_fav = !isSelect_fav}"
+                          @click="changeFav()"
                         >
                           <div class="layui-select-title">
                             <input
@@ -139,7 +127,7 @@
                     </validation-provider>
                   </div>
                   <div class="layui-form-item">
-                    <button type="buttom" class="layui-btn"  @click.prevent="validate().then(submit)">立即发布</button>
+                    <button type="button" class="layui-btn" @click="validate().then(submit)">立即发布</button>
                   </div>
                 </validation-observer>
               </form>
@@ -197,7 +185,7 @@ export default {
   mounted () {
     const saveData = localStorage.getItem('addData')
     if (saveData && saveData !== '') {
-      this.$confirm('是否加载为编辑完的内容', () => {
+      this.$confirm('是否加载未编辑完的内容？', () => {
         const obj = JSON.parse(saveData)
         this.content = obj.content
         this.title = obj.title
@@ -205,8 +193,7 @@ export default {
         this.favIndex = obj.favIndex
       }, () => {
         localStorage.setItem('addData', '')
-      }
-      )
+      })
     }
   },
   methods: {
@@ -216,28 +203,36 @@ export default {
     chooseFav (item, index) {
       this.favIndex = index
     },
+    changeSelect () {
+      this.isSelect = !this.isSelect
+    },
+    changeFav () {
+      this.isSelect_fav = !this.isSelect_fav
+    },
     add (val) {
       this.content = val
-      const savaDate = {
+      const saveData = {
         title: this.title,
         cataIndex: this.cataIndex,
         content: this.content,
         favIndex: this.favIndex
       }
       if (this.title.trim() !== '' && this.content.trim() !== '') {
-        localStorage.setItem('addData', JSON.stringify(savaDate))
+        localStorage.setItem('addData', JSON.stringify(saveData))
       }
     },
     async submit () {
       const isValid = await this.$refs.observer.validate()
       if (!isValid) {
         // ABORT!!
-      }
-      // 添加新的文章
-      if (this.content.trim() === '') {
-        this.$alert('文章内容不能为空')
         return
       }
+      // 文章内容是否为空的判断
+      if (this.content.trim() === '') {
+        this.$alert('文章内容不得为空！')
+        return
+      }
+      // 添加新的文章
       addPost({
         title: this.title,
         catalog: this.catalogs[this.cataIndex].value,
@@ -245,10 +240,11 @@ export default {
         fav: this.favList[this.favIndex],
         code: this.code,
         sid: this.$store.state.sid
-      }).then(res => {
+      }).then((res) => {
         if (res.code === 200) {
+          // 清空已经发布的内容
           localStorage.setItem('addData', '')
-          this.$alert(res.msg + '~两秒后跳转')
+          this.$alert('发贴成功~~2s后跳转！')
           setTimeout(() => {
             this.$router.push({ name: 'index' })
           }, 2000)

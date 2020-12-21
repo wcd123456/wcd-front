@@ -14,7 +14,6 @@ const escapeHtml = (val = '') => {
   const face = /\sface\[\W{1,}]/g
   if (face.test(result)) {
     let group = result.match(face)
-    // console.log('🚀 ~ file: escapeHtml.js ~ line 17 ~ escapeHtml ~ group', group)
     group.map((item) => {
       const key = item.match(/\[\S+\]/g)[0]
       result = result.replace(item, `<img src="${faces[key]}">`)
@@ -26,7 +25,7 @@ const escapeHtml = (val = '') => {
   if (img.test(result)) {
     const group = result.match(img)
     group.map((item) => {
-      // console.log('TCL: escapeHtml -> item', item)
+      console.log('TCL: escapeHtml -> item', item)
       result = result.replace(item, `<img src="${item.substr(4, item.length - 5)}">`)
     })
   }
@@ -35,7 +34,6 @@ const escapeHtml = (val = '') => {
   const link = /\sa\(\S+\]/g
   if (link.test(result)) {
     const group = result.match(link)
-    // console.log('🚀 ~ file: escapeHtml.js ~ line 38 ~ escapeHtml ~ group', group)
     const title = /\((.+)\)/
     const linkName = /\[(.+)\]/
     group.map((item) => {

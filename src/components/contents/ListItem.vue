@@ -30,7 +30,7 @@
             {{item.answer}}
           </span>
         </div>
-        <div class="fly-list-badge" v-show="item.tags.length > 0 && item.tags[0].name !==''">
+        <div class="fly-list-badge" v-show="item.tags.length > 0 && item.tags[0].name !== ''">
           <span
             class="layui-badge"
             v-for="(tag, index) in item.tags"
@@ -50,11 +50,11 @@
 </template>
 
 <script>
-import moment from 'dayjs'
-import 'dayjs/locale/zh-cn'
-import relativeTime from 'dayjs/plugin/relativeTime'
+// import moment from 'dayjs'
+// import relativeTime from 'dayjs/plugin/relativeTime'
+// import 'dayjs/locale/zh-cn'
 
-moment.extend(relativeTime)
+// moment.extend(relativeTime)
 
 // import _ from 'lodash'
 export default {
@@ -104,18 +104,18 @@ export default {
     more () {
       this.$emit('nextpage')
     }
-  },
-  filters: {
-    moment (date) {
-      // 超过7天，显示日期
-      if (moment(date).isBefore(moment().subtract(7, 'days'))) {
-        return moment(date).format('YYYY-MM-DD')
-      } else {
-        // 1小前，xx小时前，X天前
-        return moment(date).locale('zh-cn').from(moment())
-      }
-    }
   }
+  // filters: {
+  //   moment (date) {
+  //     // 超过7天，显示日期
+  //     if (moment(date).isBefore(moment().subtract(7, 'days'))) {
+  //       return moment(date).format('YYYY-MM-DD')
+  //     } else {
+  //       // 1小前，xx小时前，X天前
+  //       return moment(date).locale('zh-cn').from(moment())
+  //     }
+  //   }
+  // }
 }
 </script>
 

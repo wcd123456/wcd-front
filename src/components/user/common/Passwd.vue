@@ -48,7 +48,7 @@
           </validation-provider>
         </div>
         <div class="layui-form-item">
-          <button class="layui-btn" @click="validate().then(submit)">确认修改</button>
+          <button type="button" class="layui-btn" @click="validate().then(submit)">确认修改</button>
         </div>
       </validation-observer>
     </form>

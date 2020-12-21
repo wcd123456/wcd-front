@@ -59,12 +59,7 @@ import CodeInput from './Code'
 import Preview from './Preview'
 export default {
   name: 'Editor',
-  props: {
-    initContent: {
-      type: String,
-      default: ''
-    }
-  },
+  props: ['initContent'],
   components: {
     Face,
     ImgUpload,
@@ -72,12 +67,6 @@ export default {
     Quote,
     CodeInput,
     Preview
-  },
-  watch: {
-    initContent (newValue, oldValue) {
-      console.log('🚀 ~ file: Index.vue ~ line 78 ~ initContent ~ newValue', newValue)
-      this.content = newValue
-    }
   },
   data () {
     return {
@@ -88,8 +77,14 @@ export default {
       pos: ''
     }
   },
+  watch: {
+    initContent (newval, oldval) {
+      this.content = newval
+    }
+  },
   updated () {
     this.$emit('changeContent', this.content)
+    // console.log('content' + this.content)
   },
   methods: {
     closeModal () {
@@ -241,13 +236,13 @@ export default {
   top: 45px;
   left: 0;
   z-index: 100;
-  background: #ffffff;
+  background: #fff;
 }
 .icon-emwdaima {
   position: relative;
   top: 2px;
 }
-.layui-layer-prompt{
-    box-shadow: 1px 1px 20px rgba(0,0,0,.2);
+.layui-layer-prompt {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 </style>

@@ -1,11 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-18 10:16:46
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-18 14:10:21
--->
 <template>
   <transition name="fade">
     <div class="layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
