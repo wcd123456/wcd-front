@@ -220,7 +220,7 @@
 
 <script>
 import { getDetail } from '@/api/content'
-import { getComents, addComment, updateComment } from '@/api/comments'
+import { getComents, addComment, updateComment, setCommentBest } from '@/api/comments'
 import HotList from '@/components/sidebar/HotList'
 import Ads from '@/components/sidebar/Ads'
 import Links from '@/components/sidebar/Links'
@@ -373,7 +373,6 @@ export default {
     editComment (item) {
       this.editInfo.item = item
       this.editInfo.content = item.content
-
       // 滚动到编辑窗口位置
       scrollToElem('.layui-input-block', 500, -65)
       document.getElementById('edit').focus()
@@ -383,9 +382,14 @@ export default {
     setBest (item) {
       this.$confirm('确定采纳为最佳答案吗？', () => {
         // 发送采纳最佳答案的请求
-
-        console.log(item._id)
-      })
+        setCommentBest({ tid: this.tid, cid: item._id }).then((res) => {
+          if (res.code === 200) {
+            this.$pop('', '设置最佳答案成功~~~')
+            item.isBest = '1'
+            this.page.isEnd = '1'
+          }
+        })
+      }, () => {})
     }
   },
   computed: {

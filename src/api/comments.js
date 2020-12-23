@@ -7,8 +7,10 @@ const getComents = (params) => axios.get('/public/comments?' + qs.stringify(para
 const addComment = (data) => axios.post('/comments/reply', { ...data })
 // 更新评论
 const updateComment = (data) => axios.post('/comments/update', { ...data })
+// 更新评论
+const setCommentBest = (params) => axios.get('/comments/accept?' + qs.stringify(params))
 
 export {
   getComents,
-  addComment, updateComment
+  addComment, updateComment, setCommentBest
 }
