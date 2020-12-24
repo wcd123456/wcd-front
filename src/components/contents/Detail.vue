@@ -139,7 +139,7 @@
               </div>
               <div class="detail-body jieda-body photos" v-richtext="item.content"></div>
               <div class="jieda-reply">
-                <span class="jieda-zan" :class="{'zanok' :item.handed === '1'}" type="zan">
+                <span class="jieda-zan" :class="{'zanok' :item.handed === '1'}" type="zan" @click="hands(item)">
                   <i class="iconfont icon-zan"></i>
                   <em>{{item.hands}}</em>
                 </span>
@@ -220,7 +220,7 @@
 
 <script>
 import { getDetail } from '@/api/content'
-import { getComents, addComment, updateComment, setCommentBest } from '@/api/comments'
+import { getComents, addComment, updateComment, setCommentBest, setHands } from '@/api/comments'
 import HotList from '@/components/sidebar/HotList'
 import Ads from '@/components/sidebar/Ads'
 import Links from '@/components/sidebar/Links'
@@ -390,6 +390,18 @@ export default {
           }
         })
       }, () => {})
+    },
+    hands (item) {
+      setHands({ cid: item._id }).then((res) => {
+        console.log('🚀 ~ file: Detail.vue ~ line 396 ~ setHands ~ res', res)
+        if (res.code === 200) {
+          this.$pop('', '点赞成功')
+          item.handed = '1'
+          item.hands += 1
+        } else {
+          this.$pop('shake', res.msg)
+        }
+      })
     }
   },
   computed: {
