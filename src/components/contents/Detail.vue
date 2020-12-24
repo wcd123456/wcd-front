@@ -67,7 +67,7 @@
             </div>
             -->
             <span class="fly-list-nums">
-              <a href="#comment">
+              <a @click.prevent="answer()">
                 <i class="iconfont" title="回答">&#xe60c;</i>
                 {{page.answer}}
               </a>
@@ -82,7 +82,7 @@
             </a>
             <div class="fly-detail-user">
               <a href="../user/home.html" class="fly-link">
-                <cite>{{page.uid? page.uid.name: 'imooc'}}</cite>
+                <cite>{{page.uid ? page.uid.name: 'imooc'}}</cite>
                 <!-- <i class="iconfont icon-renzheng" title="认证信息："></i> -->
                 <i
                   class="layui-badge fly-badge-vip mr1"
@@ -96,8 +96,8 @@
             </div>
           </div>
           <div class="layui-btn-container fly-detail-admin pt1">
-            <a href class="layui-btn layui-btn-sm jie-admin">编辑</a>
-            <a href class="layui-btn layui-btn-sm jie-admin-collect">收藏</a>
+            <router-link  class="layui-btn layui-btn-sm jie-admin" v-show="page.isEnd==='0'" :to="{name:'edit',params:{tid:tid,page:page}}">编辑</router-link>
+            <a href class="layui-btn layui-btn-sm jie-admin-collect" :class="{'layui-btn-primary':page.isFav }" @click.prevent="setCollect()">{{page.isFav  ? '取消收藏' : '收藏'}}</a>
           </div>
           <div class="detail-body photos" v-html="content"></div>
         </div>
@@ -109,18 +109,18 @@
           </fieldset>
 
           <ul class="jieda" id="jieda">
-            <li class="jieda-daan" v-for="(item,index) in comments" :key="'commments' + index">
+            <li class="jieda-daan" v-for="(item,index) in comments" :key="'comments' + index">
               <div class="detail-about detail-about-reply">
                 <a class="fly-avatar" href>
-                  <img :src="item.uid ? item.uid.pic : '/img/bear-200-200.jpg'" alt=" " />
+                  <img :src="item.cuid ? item.cuid.pic : '/img/bear-200-200.jpg'" alt=" " />
                 </a>
                 <div class="fly-detail-user">
                   <a href class="fly-link">
-                    <cite>{{item.uid? item.uid.name :'imooc'}}</cite>
+                    <cite>{{item.cuid? item.cuid.name :'imooc'}}</cite>
                     <i
-                      v-if="item.uid && item.uid.isVip !=='0'?item.uid.isVip : false "
+                      v-if="item.cuid && item.cuid.isVip !=='0'?item.cuid.isVip : false "
                       class="layui-badge fly-badge-vip"
-                    >VIP{{item.uid.isVip}}</i>
+                    >VIP{{item.cuid.isVip}}</i>
                   </a>
 
                   <span v-if="index === 0">(楼主)</span>
@@ -143,7 +143,7 @@
                   <i class="iconfont icon-zan"></i>
                   <em>{{item.hands}}</em>
                 </span>
-                <span type="reply">
+                <span type="reply" @click="reply(item)">
                   <i class="iconfont icon-svgmoban53"></i>
                   回复
                 </span>
@@ -160,14 +160,15 @@
           </ul>
           <imooc-page
             :showType="'icon'"
-            :hasSelect="true"
-            :hasTotal="true"
+            :hasSelect="false"
+            :hasTotal="false"
             :total="total"
             :size="size"
             :current="current"
             :showEnd="true"
             @changeCurrent="handleChange"
             @changeLimit="handleLimit"
+            v-show="comments.length > 0 && total > 0"
           ></imooc-page>
           <div class="layui-form layui-form-pane">
             <form>
@@ -219,6 +220,7 @@
 </template>
 
 <script>
+import { addCollect } from '@/api/user'
 import { getDetail } from '@/api/content'
 import { getComents, addComment, updateComment, setCommentBest, setHands } from '@/api/comments'
 import HotList from '@/components/sidebar/HotList'
@@ -262,6 +264,12 @@ export default {
     // window.vue = scrollToElem
     this.getPostDetail()
     this.getCommentsList()
+  },
+  watch: {
+    tid (newValue, oldValue) {
+      this.getPostDetail()
+      this.getCommentsList()
+    }
   },
   methods: {
     handleChange (val) {
@@ -360,6 +368,7 @@ export default {
           this.code = ''
           this.editInfo.content = ''
           res.data.cuid = cuid
+          this.page.answer += 1
           // 添加新的评论到评论列表
           this.comments.push(res.data)
           requestAnimationFrame(() => {
@@ -367,6 +376,8 @@ export default {
           })
           // 刷新图形验证码
           this._getCode()
+        } else {
+          this.$pop('shake', res.msg)
         }
       })
     },
@@ -393,7 +404,6 @@ export default {
     },
     hands (item) {
       setHands({ cid: item._id }).then((res) => {
-        console.log('🚀 ~ file: Detail.vue ~ line 396 ~ setHands ~ res', res)
         if (res.code === 200) {
           this.$pop('', '点赞成功')
           item.handed = '1'
@@ -402,6 +412,48 @@ export default {
           this.$pop('shake', res.msg)
         }
       })
+    },
+    reply (item) {
+      // 插入@+name 到content
+      const reg = /^@[\S]+/g
+      if (this.editInfo.content) {
+        if (reg.test(this.editInfo.content)) {
+          this.editInfo.content = this.editInfo.content.replace(reg, '@' + item.cuid.name + ' ')
+        } else {
+          this.editInfo.content = `@${item.cuid.name} ${this.editInfo.content}`
+        }
+      } else {
+        this.editInfo.content = '@' + item.cuid.name + ' '
+      }
+      // 滚动到编辑窗口位置
+      // focus输入框
+      scrollToElem('.layui-input-block', 500, -65)
+      document.getElementById('edit').focus()
+    },
+    answer () {
+      // 滚动到编辑窗口位置
+      // focus输入框
+      scrollToElem('.layui-input-block', 500, -65)
+      document.getElementById('edit').focus()
+    },
+    setCollect () {
+      // 设置收藏/取消收藏
+      const isLogin = this.$store.state.isLogin
+      if (isLogin) {
+        const collcet = {
+          tid: this.tid,
+          title: this.page.title,
+          isFav: this.page.isFav ? 1 : 0
+        }
+        addCollect(collcet).then((res) => {
+          if (res.code === 200) {
+            this.page.isFav = !this.page.isFav
+            this.$pop('', this.page.isFav ? '设置收藏成功' : '取消收藏成功')
+          }
+        })
+      } else {
+        this.$pop('shake', '请先登录后再进行收藏！')
+      }
     }
   },
   computed: {
