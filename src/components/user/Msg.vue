@@ -53,8 +53,7 @@ export default {
       lists: [],
       page: 0,
       limit: 10,
-      total: 0,
-      ws: {}
+      total: 0
     }
   },
   mounted () {

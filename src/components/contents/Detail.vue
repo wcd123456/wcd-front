@@ -168,7 +168,7 @@
                   <!-- <span type="del">删除</span> -->
                   <span
                     class="jieda-accept"
-                    v-show="page.isEnd ==='0' && item.cuid._id === user._id"
+                    v-show="page.isEnd ==='0' && item.cuid._id !== user._id"
                     @click="setBest(item)"
                   >采纳</span>
                 </div>
@@ -240,7 +240,13 @@
 
 <script>
 import { getDetail } from '@/api/content'
-import { getComents, addComment, updateComment, setCommentBest, setHands } from '@/api/comments'
+import {
+  getComents,
+  addComment,
+  updateComment,
+  setCommentBest,
+  setHands
+} from '@/api/comments'
 import { addCollect } from '@/api/user'
 import HotList from '@/components/sidebar/HotList'
 import Ads from '@/components/sidebar/Ads'
@@ -299,7 +305,7 @@ export default {
       this.getCommentsList()
     },
     getPostDetail () {
-      getDetail(this.tid).then((res) => {
+      getDetail(this.tid).then(res => {
         if (res.code === 200) {
           this.page = res.data
         }
@@ -310,7 +316,7 @@ export default {
         tid: this.tid,
         page: this.current,
         limit: this.size
-      }).then((res) => {
+      }).then(res => {
         if (res.code === 200) {
           this.comments = res.data
           this.total = res.total
@@ -350,7 +356,10 @@ export default {
         isVip: user.isVip
       }
 
-      if (typeof this.editInfo.cid !== 'undefined' && this.editInfo.cid !== '') {
+      if (
+        typeof this.editInfo.cid !== 'undefined' &&
+        this.editInfo.cid !== ''
+      ) {
         const obj = { ...this.editInfo }
         delete obj['item']
         // 判断用户是否修改了内容
@@ -359,7 +368,7 @@ export default {
           return
         }
         // 更新评论
-        updateComment(obj).then((res) => {
+        updateComment(obj).then(res => {
           if (res.code === 200) {
             const temp = this.editInfo.item
             temp.content = this.editInfo.content
@@ -368,13 +377,17 @@ export default {
             this.editInfo.content = ''
             // 方法一，只用更新特定的一条的content created， $set
             // 方法二，更新整个数组中的这一条
-            this.comments.splice(this.comments.indexOf(this.editInfo.item), 1, temp)
+            this.comments.splice(
+              this.comments.indexOf(this.editInfo.item),
+              1,
+              temp
+            )
           }
         })
         return
       }
       // 添加评论
-      addComment(this.editInfo).then((res) => {
+      addComment(this.editInfo).then(res => {
         if (res.code === 200) {
           this.$pop('', '发表评论成功')
           // 发表评论成功后，清空回复内容
@@ -403,23 +416,27 @@ export default {
       this.editInfo.item = item
     },
     setBest (item) {
-      this.$confirm('确定采纳为最佳答案吗?', () => {
-        // 发送采纳最佳答案请求
-        setCommentBest({
-          cid: item._id,
-          tid: this.tid
-        }).then((res) => {
-          if (res.code === 200) {
-            this.$pop('', '设置最佳答案成功！')
-            item.isBest = '1'
-            this.page.isEnd = '1'
-          }
-        })
-        // console.log(item._id)
-      }, () => { })
+      this.$confirm(
+        '确定采纳为最佳答案吗?',
+        () => {
+          // 发送采纳最佳答案请求
+          setCommentBest({
+            cid: item._id,
+            tid: this.tid
+          }).then(res => {
+            if (res.code === 200) {
+              this.$pop('', '设置最佳答案成功！')
+              item.isBest = '1'
+              this.page.isEnd = '1'
+            }
+          })
+          // console.log(item._id)
+        },
+        () => {}
+      )
     },
     hands (item) {
-      setHands({ cid: item._id }).then((res) => {
+      setHands({ cid: item._id }).then(res => {
         if (res.code === 200) {
           this.$pop('', '点赞成功')
           item.handed = '1'
@@ -436,7 +453,10 @@ export default {
       const reg = /^@[\S]+/g
       if (this.editInfo.content) {
         if (reg.test(this.editInfo.content)) {
-          this.editInfo.content = this.editInfo.content.replace(reg, '@' + item.cuid.name + ' ')
+          this.editInfo.content = this.editInfo.content.replace(
+            reg,
+            '@' + item.cuid.name + ' '
+          )
         } else {
           if (this.editInfo.content !== '') {
             // 非空的情况
@@ -460,7 +480,7 @@ export default {
           title: this.page.title,
           isFav: this.page.isFav ? 1 : 0
         }
-        addCollect(collect).then((res) => {
+        addCollect(collect).then(res => {
           if (res.code === 200) {
             this.page.isFav = !this.page.isFav
             this.$pop('', this.page.isFav ? '设置收藏成功' : '取消收藏成功')
