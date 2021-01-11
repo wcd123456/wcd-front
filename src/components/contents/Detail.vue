@@ -67,7 +67,7 @@
             </div>
             -->
             <span class="fly-list-nums">
-              <a @click.prevent="answer()">
+              <a href="#comment">
                 <i class="iconfont" title="回答">&#xe60c;</i>
                 {{page.answer}}
               </a>
@@ -82,7 +82,7 @@
             </a>
             <div class="fly-detail-user">
               <a href="../user/home.html" class="fly-link">
-                <cite>{{page.uid ? page.uid.name: 'imooc'}}</cite>
+                <cite>{{page.uid? page.uid.name: 'imooc'}}</cite>
                 <!-- <i class="iconfont icon-renzheng" title="认证信息："></i> -->
                 <i
                   class="layui-badge fly-badge-vip mr1"
@@ -96,8 +96,16 @@
             </div>
           </div>
           <div class="layui-btn-container fly-detail-admin pt1">
-            <router-link  class="layui-btn layui-btn-sm jie-admin" v-show="page.isEnd==='0'" :to="{name:'edit',params:{tid:tid,page:page}}">编辑</router-link>
-            <a href class="layui-btn layui-btn-sm jie-admin-collect" :class="{'layui-btn-primary':page.isFav }" @click.prevent="setCollect()">{{page.isFav  ? '取消收藏' : '收藏'}}</a>
+            <router-link
+              class="layui-btn layui-btn-sm jie-admin"
+              :to="{name: 'edit', params: {tid: tid , page: page}}"
+              v-show="page.isEnd === '0'"
+            >编辑</router-link>
+            <a
+              class="layui-btn layui-btn-sm jie-admin-collect"
+              :class="{'layui-btn-primary': page.isFav}"
+              @click.prevent="setCollect()"
+            >{{page.isFav ? '取消收藏': '收藏'}}</a>
           </div>
           <div class="detail-body photos" v-html="content"></div>
         </div>
@@ -109,19 +117,19 @@
           </fieldset>
 
           <ul class="jieda" id="jieda">
-            <li class="jieda-daan" v-for="(item,index) in comments" :key="'comments' + index">
+            <li class="jieda-daan" v-for="(item,index) in comments" :key="'commments' + index">
               <div class="detail-about detail-about-reply">
                 <a class="fly-avatar" href>
                   <img :src="item.cuid ? item.cuid.pic : '/img/bear-200-200.jpg'" alt=" " />
                 </a>
                 <div class="fly-detail-user">
-                  <a href class="fly-link">
+                  <router-link class="fly-link" :to="{name: 'home', params: {uid: item.cuid._id}}">
                     <cite>{{item.cuid? item.cuid.name :'imooc'}}</cite>
                     <i
                       v-if="item.cuid && item.cuid.isVip !=='0'?item.cuid.isVip : false "
                       class="layui-badge fly-badge-vip"
                     >VIP{{item.cuid.isVip}}</i>
-                  </a>
+                  </router-link>
 
                   <span v-if="index === 0">(楼主)</span>
                   <!--
@@ -135,11 +143,16 @@
                   <span>{{item.created | moment}}</span>
                 </div>
 
-                <i class="iconfont icon-caina" title="最佳答案" v-show="item.isBest==='1'"></i>
+                <i class="iconfont icon-caina" title="最佳答案" v-show="item.isBest === '1'"></i>
               </div>
               <div class="detail-body jieda-body photos" v-richtext="item.content"></div>
               <div class="jieda-reply">
-                <span class="jieda-zan" :class="{'zanok' :item.handed === '1'}" type="zan" @click="hands(item)">
+                <span
+                  class="jieda-zan"
+                  :class="{'zanok' :item.handed === '1'}"
+                  type="zan"
+                  @click="hands(item)"
+                >
                   <i class="iconfont icon-zan"></i>
                   <em>{{item.hands}}</em>
                 </span>
@@ -148,10 +161,16 @@
                   回复
                 </span>
                 <div class="jieda-admin">
-                  <!-- 评论是作者本人并且帖子没有关闭 -->
-                  <span type="edit" v-show="page.isEnd==='0' && item.cuid._id === user._id" @click="editComment(item)">编辑</span>
+                  <span
+                    v-show="page.isEnd ==='0' && item.cuid._id === user._id"
+                    @click="editComment(item)"
+                  >编辑</span>
                   <!-- <span type="del">删除</span> -->
-                  <span class="jieda-accept" v-show="page.isEnd==='0' && page.uid._id === user._id" @click="setBest(item)">采纳</span>
+                  <span
+                    class="jieda-accept"
+                    v-show="page.isEnd ==='0' && item.cuid._id === user._id"
+                    @click="setBest(item)"
+                  >采纳</span>
                 </div>
               </div>
             </li>
@@ -159,6 +178,7 @@
             <li class="fly-none" v-if="comments.length === 0">消灭零回复</li>
           </ul>
           <imooc-page
+            v-show="comments.length > 0 && total > 0"
             :showType="'icon'"
             :hasSelect="false"
             :hasTotal="false"
@@ -168,7 +188,6 @@
             :showEnd="true"
             @changeCurrent="handleChange"
             @changeLimit="handleLimit"
-            v-show="comments.length > 0 && total > 0"
           ></imooc-page>
           <div class="layui-form layui-form-pane">
             <form>
@@ -220,9 +239,9 @@
 </template>
 
 <script>
-import { addCollect } from '@/api/user'
 import { getDetail } from '@/api/content'
 import { getComents, addComment, updateComment, setCommentBest, setHands } from '@/api/comments'
+import { addCollect } from '@/api/user'
 import HotList from '@/components/sidebar/HotList'
 import Ads from '@/components/sidebar/Ads'
 import Links from '@/components/sidebar/Links'
@@ -232,6 +251,7 @@ import CodeMix from '@/mixin/code'
 import Pagination from '@/components/modules/pagination/Index'
 import { escapeHtml } from '@/utils/escapeHtml'
 import { scrollToElem } from '@/utils/common'
+
 export default {
   name: 'Detail',
   mixins: [CodeMix],
@@ -259,14 +279,12 @@ export default {
     }
   },
   mounted () {
-    // 测试滚动
-    // window.vue('.layui-input-block',1000,-65)
     // window.vue = scrollToElem
     this.getPostDetail()
     this.getCommentsList()
   },
   watch: {
-    tid (newValue, oldValue) {
+    tid (newval, oldval) {
       this.getPostDetail()
       this.getCommentsList()
     }
@@ -323,7 +341,8 @@ export default {
       this.editInfo.code = this.code
       this.editInfo.sid = this.$store.state.sid
       this.editInfo.tid = this.tid
-      // 获取评论用户的信息：图片，昵称，vip状态
+
+      // 获取评论用户的信息：图片、昵称、vip
       const cuid = {
         _id: user._id,
         pic: user.pic,
@@ -336,7 +355,7 @@ export default {
         delete obj['item']
         // 判断用户是否修改了内容
         if (this.editInfo.content === this.editInfo.item.content) {
-          this.$pop('shake', '确定编辑内容~~~')
+          this.$pop('shake', '确定编辑了内容~~~')
           return
         }
         // 更新评论
@@ -347,15 +366,9 @@ export default {
             this.$pop('', '更新评论成功')
             this.code = ''
             this.editInfo.content = ''
-            // 方法一，只用更新特定的一条content created，$set
+            // 方法一，只用更新特定的一条的content created， $set
             // 方法二，更新整个数组中的这一条
-            // res.data.cuid = cuid
             this.comments.splice(this.comments.indexOf(this.editInfo.item), 1, temp)
-            requestAnimationFrame(() => {
-              this.$refs.observer && this.$refs.observer.reset()
-            })
-            // 刷新图形验证码
-            this._getCode()
           }
         })
         return
@@ -367,9 +380,8 @@ export default {
           // 发表评论成功后，清空回复内容
           this.code = ''
           this.editInfo.content = ''
-          res.data.cuid = cuid
-          this.page.answer += 1
           // 添加新的评论到评论列表
+          res.data.cuid = cuid
           this.comments.push(res.data)
           requestAnimationFrame(() => {
             this.$refs.observer && this.$refs.observer.reset()
@@ -377,30 +389,34 @@ export default {
           // 刷新图形验证码
           this._getCode()
         } else {
-          this.$pop('shake', res.msg)
+          this.$alert(res.msg)
         }
       })
     },
     editComment (item) {
-      this.editInfo.item = item
       this.editInfo.content = item.content
-      // 滚动到编辑窗口位置
+      // 动态滚动到输入框的位置，并且进行focus
       scrollToElem('.layui-input-block', 500, -65)
       document.getElementById('edit').focus()
-      // 确定需要编辑的记录
+      // 确定需要去编辑的记录
       this.editInfo.cid = item._id
+      this.editInfo.item = item
     },
     setBest (item) {
-      this.$confirm('确定采纳为最佳答案吗？', () => {
-        // 发送采纳最佳答案的请求
-        setCommentBest({ tid: this.tid, cid: item._id }).then((res) => {
+      this.$confirm('确定采纳为最佳答案吗?', () => {
+        // 发送采纳最佳答案请求
+        setCommentBest({
+          cid: item._id,
+          tid: this.tid
+        }).then((res) => {
           if (res.code === 200) {
-            this.$pop('', '设置最佳答案成功~~~')
+            this.$pop('', '设置最佳答案成功！')
             item.isBest = '1'
             this.page.isEnd = '1'
           }
         })
-      }, () => {})
+        // console.log(item._id)
+      }, () => { })
     },
     hands (item) {
       setHands({ cid: item._id }).then((res) => {
@@ -414,38 +430,37 @@ export default {
       })
     },
     reply (item) {
-      // 插入@+name 到content
+      // 插入@ + name 到 content
+      // 滚动页面到输入框
+      // focus 输入框
       const reg = /^@[\S]+/g
       if (this.editInfo.content) {
         if (reg.test(this.editInfo.content)) {
           this.editInfo.content = this.editInfo.content.replace(reg, '@' + item.cuid.name + ' ')
         } else {
-          this.editInfo.content = `@${item.cuid.name} ${this.editInfo.content}`
+          if (this.editInfo.content !== '') {
+            // 非空的情况
+            this.editInfo.content = `@${item.cuid.name} ${this.editInfo.content}`
+          }
         }
       } else {
+        // 评论框为空
         this.editInfo.content = '@' + item.cuid.name + ' '
       }
-      // 滚动到编辑窗口位置
-      // focus输入框
-      scrollToElem('.layui-input-block', 500, -65)
-      document.getElementById('edit').focus()
-    },
-    answer () {
-      // 滚动到编辑窗口位置
-      // focus输入框
+      // 动态滚动到输入框的位置，并且进行focus
       scrollToElem('.layui-input-block', 500, -65)
       document.getElementById('edit').focus()
     },
     setCollect () {
-      // 设置收藏/取消收藏
+      // 设置收藏 & 取消收藏
       const isLogin = this.$store.state.isLogin
       if (isLogin) {
-        const collcet = {
+        const collect = {
           tid: this.tid,
           title: this.page.title,
           isFav: this.page.isFav ? 1 : 0
         }
-        addCollect(collcet).then((res) => {
+        addCollect(collect).then((res) => {
           if (res.code === 200) {
             this.page.isFav = !this.page.isFav
             this.$pop('', this.page.isFav ? '设置收藏成功' : '取消收藏成功')

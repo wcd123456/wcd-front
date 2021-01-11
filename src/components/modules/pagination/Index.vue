@@ -211,7 +211,7 @@ export default {
     jumpTo (event) {
       const result = event.target.value
       let cur = this.current
-      if (result > (this.current + 1) || result < 0) {
+      if (result > this.total || result < 0) {
         this.$pop('shake', '请输入正确的页码')
       } else {
         cur = result - 1

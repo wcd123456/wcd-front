@@ -5,9 +5,7 @@
       <div class="layui-form layui-form-pane">
         <div class="layui-tab layui-tab-brief" lay-filter="user">
           <ul class="layui-tab-title">
-            <li class="layui-this">
-              编辑帖子
-            </li>
+            <li class="layui-this">编辑帖子</li>
           </ul>
           <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
             <div class="layui-tab-item layui-show">
@@ -15,36 +13,32 @@
                 <validation-observer ref="observer" v-slot="{ validate }">
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
-
-                        <div class="layui-row">
-                          <label class="layui-form-label">所在专栏</label>
-                          <div class="layui-input-block">
-                            <div
-                              class="layui-unselect layui-form-select"
-                            >
-                              <div class="layui-select-title">
-                                <input
-                                  type="text"
-                                  placeholder="请选择"
-                                  readonly
-                                  v-model="catalogs[cataIndex].text"
-                                  class="layui-input layui-unselect layui-disabled"
-                                />
-                                <i class="layui-edge"></i>
-                              </div>
+                      <div class="layui-row">
+                        <label class="layui-form-label">所在专栏</label>
+                        <div class="layui-input-block">
+                          <div class="layui-unselect layui-form-select">
+                            <div class="layui-select-title">
+                              <input
+                                type="text"
+                                placeholder="请选择"
+                                readonly
+                                v-model="catalogs[cataIndex].text"
+                                class="layui-input layui-unselect layui-disabled"
+                              />
+                              <i class="layui-edge"></i>
                             </div>
                           </div>
                         </div>
+                      </div>
                     </div>
                     <div class="layui-col-md9">
-
-                        <div class="layui-row">
-                          <label for="L_title" class="layui-form-label">标题</label>
-                          <div class="layui-input-block">
-                            <input type="text" class="layui-input" v-model="title" />
-                            <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
-                          </div>
+                      <div class="layui-row">
+                        <label for="L_title" class="layui-form-label">标题</label>
+                        <div class="layui-input-block">
+                          <input type="text" class="layui-input" v-model="title" />
+                          <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
                         </div>
+                      </div>
                     </div>
                   </div>
                   <editor @changeContent="add" :initContent="content"></editor>
@@ -52,9 +46,7 @@
                     <div class="layui-inline">
                       <label class="layui-form-label">悬赏飞吻</label>
                       <div class="layui-input-inline" style="width: 190px;">
-                        <div
-                          class="layui-unselect layui-form-select"
-                        >
+                        <div class="layui-unselect layui-form-select">
                           <div class="layui-select-title">
                             <input
                               type="text"
@@ -116,16 +108,14 @@ import { updatePost } from '@/api/content'
 import CodeMix from '@/mixin/code'
 import Editor from '../modules/editor/Index'
 export default {
-  name: 'edit',
+  name: 'Edit',
+  props: ['tid', 'page'],
   mixins: [CodeMix],
   components: {
     Editor
   },
-  props: ['tid', 'page'],
   data () {
     return {
-      isSelect: false,
-      isSelect_fav: false,
       cataIndex: 0,
       favIndex: 0,
       catalogs: [
@@ -164,6 +154,7 @@ export default {
       // 缓存edit内容
       localStorage.setItem('editData', JSON.stringify(this.page))
     } else {
+      // 页面上无page内容，可能是用户进行了刷新，则取本地缓存的内容
       const saveData = localStorage.getItem('editData')
       if (saveData && saveData !== '') {
         this.$confirm('是否加载未编辑完的内容？', () => {
@@ -201,7 +192,7 @@ export default {
       }
       if (this.title.trim() !== '' && this.content.trim() !== '') {
         const editData = localStorage.getItem('editData')
-        let newObj = { }
+        let newObj = {}
         if (editData && editData !== '') {
           newObj = { ...saveData, ...JSON.parse(editData) }
         }
@@ -230,10 +221,10 @@ export default {
         if (res.code === 200) {
           // 清空已经发布的内容
           localStorage.setItem('editData', '')
-          this.$pop('', '发贴成功~~2s后跳转！')
+          this.$pop('', '更新成功!')
           setTimeout(() => {
             this.$router.push({ name: 'detail', params: { tid: this.tid } })
-          }, 2000)
+          }, 1000)
         } else {
           this.$alert(res.msg)
         }

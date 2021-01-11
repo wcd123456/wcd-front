@@ -1,17 +1,9 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: wcd
- * @Date: 2020-12-18 10:16:46
- * @LastEditors: wcd
- * @LastEditTime: 2020-12-24 15:03:01
--->
 <template>
   <div>
     <dl class="fly-panel fly-list-one">
       <dt class="fly-panel-title">本周热议</dt>
       <dd v-for="(item, index) in lists" :key="'hotlist' + index">
-        <router-link :to="{name:'detail',params:{tid:item._id}}">{{item.title}}</router-link>
+        <router-link :to="{name: 'detail', params: {tid: item._id}}">{{item.title}}</router-link>
         <span>
           <i class="iconfont icon-pinglun1"></i>
           {{item.answer}}

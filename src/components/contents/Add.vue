@@ -244,7 +244,7 @@ export default {
         if (res.code === 200) {
           // 清空已经发布的内容
           localStorage.setItem('addData', '')
-          this.$pop('', '发贴成功~~2s后跳转！')
+          this.$pop('', '发贴成功!')
           setTimeout(() => {
             this.$router.push({ name: 'detail', params: { tid: res.data._id } })
           }, 2000)

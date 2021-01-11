@@ -62,7 +62,6 @@ export default {
         return
       }
       this.current = val
-      console.log(val)
       switch (val) {
         // 未结贴
         case 0:

@@ -26,7 +26,6 @@
 export default {
   name: 'settings',
   mounted () {
-    window.vue = this
   }
 }
 </script>

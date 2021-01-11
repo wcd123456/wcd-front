@@ -15,11 +15,32 @@ const changePasswd = (data) => axios.post('/user/change-password', {
   ...data
 })
 
-// 修设置收藏
+// 设置收藏 & 取消收藏
 const addCollect = (data) => axios.get('/user/set-collect?' + qs.stringify(data))
 
 // 获取收藏列表
-const getCollect = (data) => axios.get('/user/get-collect?' + qs.stringify(data))
+const getCollect = (data) => axios.get('/user/collect?' + qs.stringify(data))
+
+// 获取发表的文章列表
+const getPostListByUid = (data) => axios.get('/user/post?' + qs.stringify(data))
+
+// 获取用户最近的发表文章列表
+const getPostPublic = (data) => axios.get('/public/latest-post?' + qs.stringify(data))
+
+// 删除指定文章列表
+const deletePostByUid = (data) => axios.get('/user/delete-post?' + qs.stringify(data))
+
+// 获取用户的基本信息
+const getInfo = (data) => axios.get('/public/info?' + qs.stringify(data))
+
+// 获取用户最近评论列表
+const getCommentList = (data) => axios.get('/public/latest-comment?' + qs.stringify(data))
+
+// 获取用户未读消息
+const getMsg = (data) => axios.get('/user/getmsg?' + qs.stringify(data))
+
+// 设置用户未读消息
+const setMsg = (data) => axios.get('/user/setmsg?' + qs.stringify(data))
 
 export {
   userSign,
@@ -27,5 +48,12 @@ export {
   updateUsername,
   changePasswd,
   addCollect,
-  getCollect
+  getCollect,
+  getPostListByUid,
+  deletePostByUid,
+  getInfo,
+  getCommentList,
+  getPostPublic,
+  getMsg,
+  setMsg
 }

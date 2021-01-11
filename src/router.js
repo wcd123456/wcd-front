@@ -113,25 +113,23 @@ const router = new Router({
     },
     {
       path: '/edit/:tid',
-      name: 'edit',
       props: true,
+      name: 'edit',
       component: Edit,
       meta: { requiresAuth: true },
-      beforeEnter: (to, from, next) => {
-        // 正常从detail页面进来
-        if (from.name === 'detail' && to.params.page && to.params.page.isEnd === '0') {
+      beforeEnter (to, from, next) {
+        // 正常的情况 detail
+        if (['detail', 'mypost'].indexOf(from.name) !== -1 && to.params.page && to.params.page.isEnd === '0') {
           next()
         } else {
-          //  用户再edit页面刷新的情况
+          // 用户在edit页面刷新的情况
           const editData = localStorage.getItem('editData')
           if (editData && editData !== '') {
             const editObj = JSON.parse(editData)
             if (editObj.isEnd === '0') {
               next()
             } else {
-              (
-                next('/')
-              )
+              next('/')
             }
           } else {
             next('/')
@@ -218,6 +216,7 @@ const router = new Router({
     },
     {
       path: '/404',
+      name: '404',
       component: NoFound
     },
     {
@@ -241,6 +240,9 @@ router.beforeEach((to, from, next) => {
       store.commit('setToken', token)
       store.commit('setUserInfo', userInfo)
       store.commit('setIsLogin', true)
+      if (!store.state.ws) {
+        store.commit('initWebSocket', {})
+      }
     } else {
       localStorage.clear()
     }

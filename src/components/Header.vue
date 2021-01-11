@@ -2,19 +2,19 @@
   <div class="fly-header layui-bg-black">
     <div class="layui-container">
       <a class="fly-logo" href="/">
-        <img src="../assets/img/logo-2.png" alt="layui" />
+        <!-- <img src="../assets/img/logo-2.png" alt="layui" /> -->
       </a>
       <ul class="layui-nav fly-nav layui-hide-xs">
         <li class="layui-nav-item layui-this">
           <a href="/">
-            <i class="iconfont icon-jiaoliu"></i>交流
+            <i class="iconfont icon-jiaoliu"></i>首页
           </a>
         </li>
-        <li class="layui-nav-item">
+        <!-- <li class="layui-nav-item">
           <a href="case/case.html">
             <i class="iconfont icon-iconmingxinganli"></i>案例
           </a>
-        </li>
+        </li> -->
         <li class="layui-nav-item">
           <a href="http://www.layui.com/" target="_blank">
             <i class="iconfont icon-ui"></i>框架
@@ -56,7 +56,7 @@
         <template v-else>
           <!-- 调整了Hover的区域 -->
           <li class="layui-nav-item" @mouseover="show()" @mouseleave="hide()">
-            <a class="fly-nav-avatar" href="javascript:;">
+            <router-link class="fly-nav-avatar" :to="{name: 'center'}">
               <cite class="layui-hide-xs">{{userInfo.name}}</cite>
               <!-- <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i> -->
               <i
@@ -64,7 +64,7 @@
                 v-show="userInfo.isVip !== '0'"
               >VIP{{userInfo.isVip}}</i>
               <img :src="userInfo.pic" />
-            </a>
+            </router-link>
             <dl
               class="layui-nav-child layui-anim layui-anim-upbit"
               :class="{'layui-show': isHover}"
@@ -80,7 +80,7 @@
                 </router-link>
               </dd>
               <dd>
-                <router-link :to="{name: 'info'}">
+                <router-link :to="{name: 'home', params: {uid: userInfo._id}}">
                   <i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页
                 </router-link>
               </dd>
@@ -90,6 +90,15 @@
               </dd>
             </dl>
           </li>
+          <div class="fly-nav-msg" v-show="num.message && num.message !== 0">{{num.message}}</div>
+          <transition name="fade">
+            <div class="layui-layer-tips" v-show="hasMsg">
+              <div class="layui-layer-content">
+                您有{{num.message}}条未读消息
+                <i class="layui-layer-TipsG layui-layer-TipsB"></i>
+              </div>
+            </div>
+          </transition>
         </template>
       </ul>
     </div>
@@ -97,12 +106,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Header',
   data () {
     return {
       isHover: false,
-      hoverCtrl: {}
+      hoverCtrl: {},
+      hasMsg: false
     }
   },
   methods: {
@@ -130,7 +141,25 @@ export default {
       }, () => { })
     }
   },
+  watch: {
+    num (newval, oldval) {
+      if (newval.event && newval !== oldval) {
+        this.hasMsg = true
+        setTimeout(() => {
+          this.hasMsg = false
+        }, 2000)
+      }
+    }
+  },
   computed: {
+    // 方法一
+    // num () {
+    //  return this.$store.state.num
+    // }
+    // 方法二
+    ...mapState({
+      num: state => state.num
+    }),
     isShow () {
       return this.$store.state.isLogin
     },
@@ -150,5 +179,12 @@ export default {
   left: -15px;
   top: -10px;
   margin-left: 15px;
+}
+.layui-layer-tips {
+  position: fixed;
+  white-space: nowrap;
+  right: 0;
+  top: 60px;
+  z-index: 2000;
 }
 </style>

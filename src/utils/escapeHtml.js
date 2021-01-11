@@ -25,7 +25,6 @@ const escapeHtml = (val = '') => {
   if (img.test(result)) {
     const group = result.match(img)
     group.map((item) => {
-      console.log('TCL: escapeHtml -> item', item)
       result = result.replace(item, `<img src="${item.substr(4, item.length - 5)}">`)
     })
   }

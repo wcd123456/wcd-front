@@ -8,11 +8,11 @@
           <div class="content fly-signin">
             <p>
               积分经验值：
-              <cite>100</cite>
+              <cite>{{userInfo.favs}}</cite>
             </p>
             <p>
               您当前为:
-              <cite>非VIP</cite>
+              <cite>{{userInfo.isVip === '0'? '非VIP' : 'VIP' + userInfo.isVip }}</cite>
             </p>
           </div>
         </div>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { getInfo } from '@/api/user'
 import Sign from '@/components/sidebar/Sign.vue'
 export default {
   name: 'user-center',
@@ -114,6 +115,23 @@ export default {
           icon: 'layui-icon-user'
         }
       ]
+    }
+  },
+  computed: {
+    userInfo () {
+      return this.$store.state.userInfo
+    }
+  },
+  mounted () {
+    this.getUserInfo()
+  },
+  methods: {
+    getUserInfo () {
+      getInfo({ uid: this.userInfo._id }).then((res) => {
+        if (res.code === 200) {
+          this.$store.commit('setUserInfo', res.data)
+        }
+      })
     }
   }
 }

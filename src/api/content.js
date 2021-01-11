@@ -1,6 +1,7 @@
 import axios from '@/utils/request'
 import qs from 'qs'
 import store from '@/store'
+
 /**
  * 读取文章列表
  * @param {Object} options 读取文章列表接口参数
@@ -37,7 +38,7 @@ const getDetail = (tid) => {
   if (token !== '') {
     headers = {
       headers: {
-        Authorization: 'Bearer ' + token
+        'Authorization': 'Bearer ' + store.state.token
       }
     }
   }
@@ -46,6 +47,7 @@ const getDetail = (tid) => {
 
 // 更新文章，编辑帖子
 const updatePost = (data) => axios.post('/content/update', { ...data })
+
 export {
   getList,
   getTips,
